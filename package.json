@@ -14,7 +14,7 @@
     "test:e2e": "playwright test",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
-    "test": "npm run test:unit && npm run test:e2e"
+    "test": "pnpm run test:unit && pnpm run test:e2e"
   },
   "keywords": [],
   "author": "SRoll",

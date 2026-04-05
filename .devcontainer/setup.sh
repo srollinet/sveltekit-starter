@@ -9,6 +9,10 @@ log "Installing dependencies..."
 pnpm install --frozen-lockfile 2>/dev/null || true
 log "Dependencies installed."
 
+log "Installing Playwright browsers..."
+pnpm exec playwright install --with-deps chromium
+log "Playwright browsers installed."
+
 log "Adding shell aliases..."
 
 # Disable npm and encourage using pnpm instead
