@@ -8,8 +8,8 @@
 ### Foundation
 
 - [x] **FOUND-01**: SvelteKit 2 + Svelte 5 (runes) project configured with TypeScript in strict mode
-- [ ] **FOUND-02**: Tailwind CSS v4 configured with CSS-first setup (no `tailwind.config.js`)
-- [ ] **FOUND-03**: DaisyUI v5 configured as Tailwind plugin in CSS
+- [x] **FOUND-02**: Tailwind CSS v4 configured with CSS-first setup (no `tailwind.config.js`)
+- [x] **FOUND-03**: DaisyUI v5 configured as Tailwind plugin in CSS
 - [x] **FOUND-04**: `@sveltejs/adapter-node` configured for production Docker/self-hosted deployment
 - [ ] **FOUND-05**: Base root layout (`+layout.svelte`) with mobile-responsive navigation using DaisyUI components
 - [ ] **FOUND-06**: Home page (`+page.svelte`) demonstrating the stack is working (not a blank page)
@@ -106,8 +106,8 @@
 | Requirement | Phase                                  | Status   |
 | ----------- | -------------------------------------- | -------- |
 | FOUND-01    | Phase 1: Foundation                    | Complete |
-| FOUND-02    | Phase 1: Foundation                    | Pending  |
-| FOUND-03    | Phase 1: Foundation                    | Pending  |
+| FOUND-02    | Phase 1: Foundation                    | Complete |
+| FOUND-03    | Phase 1: Foundation                    | Complete |
 | FOUND-04    | Phase 1: Foundation                    | Complete |
 | FOUND-05    | Phase 1: Foundation                    | Pending  |
 | FOUND-06    | Phase 1: Foundation                    | Pending  |

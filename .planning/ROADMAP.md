@@ -42,7 +42,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 
 - [x] 01-01-PLAN.md -- Scaffold SvelteKit skeleton and configure adapter-node + TypeScript strict
-- [ ] 01-02-PLAN.md -- Install and configure Tailwind CSS v4 + DaisyUI v5 (CSS-first)
+- [x] 01-02-PLAN.md -- Install and configure Tailwind CSS v4 + DaisyUI v5 (CSS-first)
 - [ ] 01-03-PLAN.md -- Build root layout (navbar + drawer + theme toggle), home page, error page
 - [ ] 01-04-PLAN.md -- Automated build verification + human visual sign-off
 
@@ -146,7 +146,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 | Phase                            | Plans Complete | Status      | Completed |
 | -------------------------------- | -------------- | ----------- | --------- |
-| 1. Foundation                    | 0/4            | Not started | -         |
+| 1. Foundation                    | 2/4            | In Progress |           |
 | 2. Dev Infrastructure & AI Agent | 0/0            | Not started | -         |
 | 3. Code Quality                  | 0/0            | Not started | -         |
 | 4. Database                      | 0/0            | Not started | -         |
