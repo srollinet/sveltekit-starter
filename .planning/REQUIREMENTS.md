@@ -1,7 +1,7 @@
 # Requirements: SvelteKit Battery-Included Starter
 
 **Defined:** 2026-04-05
-**Core Value:** Clone, run `docker compose up`, have a production-grade full-stack SvelteKit app with all tooling configured and passing — in under 5 minutes.
+**Core Value:** Clone, run `docker compose up`, have a production-grade full-stack SvelteKit app with all tooling configured and passing -- in under 5 minutes.
 
 ## v1 Requirements
 
@@ -47,13 +47,13 @@
 - [ ] **OBS-03**: Traces and metrics exported via OTLP/HTTP to the local Aspire Dashboard
 - [ ] **OBS-04**: Structured logging configured (pino or equivalent) with log records sent to the OTEL pipeline
 - [ ] **OBS-05**: .NET Aspire Dashboard container in `docker-compose.yml` as the local OTEL collector + UI (OTLP port 4318, dashboard UI on port 18888)
-- [ ] **OBS-06**: `GET /api/health` endpoint returning JSON `{ status, db, timestamp }` — checks DB connectivity
+- [ ] **OBS-06**: `GET /api/health` endpoint returning JSON `{ status, db, timestamp }` -- checks DB connectivity
 
 ### Security
 
 - [ ] **SEC-01**: Security HTTP headers applied in `hooks.server.ts` via `@nosecone/sveltekit`: CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy
 - [ ] **SEC-02**: SvelteKit built-in CSRF origin checking configured and documented in `hooks.server.ts` comments
-- [ ] **SEC-03**: `$lib/server/` directory enforced as server-only — no accidental client-side imports of secrets
+- [ ] **SEC-03**: `$lib/server/` directory enforced as server-only -- no accidental client-side imports of secrets
 - [ ] **SEC-04**: `hooks.server.ts` uses `sequence()` to compose security headers, OTEL span enrichment, and locals population in a clean, testable pipeline
 
 ### Testing
@@ -68,13 +68,13 @@
 ### Docker & Deployment
 
 - [ ] **DOCK-01**: `docker-compose.yml` starts PostgreSQL + Aspire Dashboard with health checks; developer runs `docker compose up` for full dev stack
-- [ ] **DOCK-02**: Production `Dockerfile` with multi-stage build: install deps → build SvelteKit → copy adapter-node output to slim final image
+- [ ] **DOCK-02**: Production `Dockerfile` with multi-stage build: install deps -> build SvelteKit -> copy adapter-node output to slim final image
 - [ ] **DOCK-03**: Production image runs as non-root user; optimized image size
 - [ ] **DOCK-04**: `docker-compose.yml` environment variables reference `.env` file; no hardcoded secrets
 
 ### AI Agent Configuration
 
-- [ ] **AI-01**: `CLAUDE.md` at project root with: project overview, tech stack, folder structure, key commands (`npm run dev`, `docker compose up`, test scripts, db scripts), coding conventions, and testing patterns
+- [ ] **AI-01**: `CLAUDE.md` at project root with: project overview, tech stack, folder structure, key commands (`pnpm run dev`, `docker compose up`, test scripts, db scripts), coding conventions, and testing patterns
 - [ ] **AI-02**: `.claude/settings.json` (or `mcp.json`) pre-configured with the official `@sveltejs/mcp` MCP server so Claude Code has Svelte/SvelteKit docs + `svelte-autofixer` available automatically
 
 ## v2 Requirements
@@ -103,27 +103,61 @@
 
 ## Traceability
 
-Updated during roadmap creation.
-
-| Requirement          | Phase   | Status  |
-| -------------------- | ------- | ------- |
-| FOUND-01 to FOUND-07 | Phase 1 | Pending |
-| QUAL-01 to QUAL-06   | Phase 2 | Pending |
-| DB-01 to DB-07       | Phase 3 | Pending |
-| ENV-01 to ENV-03     | Phase 3 | Pending |
-| OBS-01 to OBS-06     | Phase 4 | Pending |
-| SEC-01 to SEC-04     | Phase 5 | Pending |
-| TEST-01 to TEST-06   | Phase 6 | Pending |
-| DOCK-01 to DOCK-04   | Phase 7 | Pending |
-| AI-01 to AI-02       | Phase 8 | Pending |
+| Requirement | Phase                                  | Status  |
+| ----------- | -------------------------------------- | ------- |
+| FOUND-01    | Phase 1: Foundation                    | Pending |
+| FOUND-02    | Phase 1: Foundation                    | Pending |
+| FOUND-03    | Phase 1: Foundation                    | Pending |
+| FOUND-04    | Phase 1: Foundation                    | Pending |
+| FOUND-05    | Phase 1: Foundation                    | Pending |
+| FOUND-06    | Phase 1: Foundation                    | Pending |
+| FOUND-07    | Phase 1: Foundation                    | Pending |
+| DOCK-01     | Phase 2: Dev Infrastructure & AI Agent | Pending |
+| ENV-01      | Phase 2: Dev Infrastructure & AI Agent | Pending |
+| ENV-02      | Phase 2: Dev Infrastructure & AI Agent | Pending |
+| ENV-03      | Phase 2: Dev Infrastructure & AI Agent | Pending |
+| AI-01       | Phase 2: Dev Infrastructure & AI Agent | Pending |
+| AI-02       | Phase 2: Dev Infrastructure & AI Agent | Pending |
+| QUAL-01     | Phase 3: Code Quality                  | Pending |
+| QUAL-02     | Phase 3: Code Quality                  | Pending |
+| QUAL-03     | Phase 3: Code Quality                  | Pending |
+| QUAL-04     | Phase 3: Code Quality                  | Pending |
+| QUAL-05     | Phase 3: Code Quality                  | Pending |
+| QUAL-06     | Phase 3: Code Quality                  | Pending |
+| DB-01       | Phase 4: Database                      | Pending |
+| DB-02       | Phase 4: Database                      | Pending |
+| DB-03       | Phase 4: Database                      | Pending |
+| DB-04       | Phase 4: Database                      | Pending |
+| DB-05       | Phase 4: Database                      | Pending |
+| DB-06       | Phase 4: Database                      | Pending |
+| DB-07       | Phase 4: Database                      | Pending |
+| OBS-01      | Phase 5: Observability                 | Pending |
+| OBS-02      | Phase 5: Observability                 | Pending |
+| OBS-03      | Phase 5: Observability                 | Pending |
+| OBS-04      | Phase 5: Observability                 | Pending |
+| OBS-05      | Phase 5: Observability                 | Pending |
+| OBS-06      | Phase 5: Observability                 | Pending |
+| SEC-01      | Phase 6: Security                      | Pending |
+| SEC-02      | Phase 6: Security                      | Pending |
+| SEC-03      | Phase 6: Security                      | Pending |
+| SEC-04      | Phase 6: Security                      | Pending |
+| TEST-01     | Phase 7: Testing                       | Pending |
+| TEST-02     | Phase 7: Testing                       | Pending |
+| TEST-03     | Phase 7: Testing                       | Pending |
+| TEST-04     | Phase 7: Testing                       | Pending |
+| TEST-05     | Phase 7: Testing                       | Pending |
+| TEST-06     | Phase 7: Testing                       | Pending |
+| DOCK-02     | Phase 8: Production Docker             | Pending |
+| DOCK-03     | Phase 8: Production Docker             | Pending |
+| DOCK-04     | Phase 8: Production Docker             | Pending |
 
 **Coverage:**
 
-- v1 requirements: 42 total
-- Mapped to phases: 42
-- Unmapped: 0 ✓
+- v1 requirements: 45 total
+- Mapped to phases: 45
+- Unmapped: 0
 
 ---
 
 _Requirements defined: 2026-04-05_
-_Last updated: 2026-04-05 after initialization_
+_Last updated: 2026-04-05 after roadmap revision (Phase 2 reorder)_
