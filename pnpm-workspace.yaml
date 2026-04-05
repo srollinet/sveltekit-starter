@@ -3,6 +3,15 @@ engineStrict: true
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
   - get-shit-done-cc@1.32.0
+  - '@sveltejs/kit'
+  - '@sveltejs/vite-plugin-svelte'
+  - svelte
+  - vite
+  - vitest
+  - typescript
+  - eslint
+  - eslint-plugin-svelte
+  - typescript-eslint
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 14400 # 10 days
