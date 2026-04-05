@@ -1,0 +1,10 @@
+engineStrict: true
+
+minimumReleaseAge: 4320 # 3 days
+minimumReleaseAgeExclude:
+  - get-shit-done-cc@1.32.0
+
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 14400 # 10 days
+
+blockExoticSubdeps: true
