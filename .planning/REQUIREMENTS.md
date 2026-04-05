@@ -11,9 +11,9 @@
 - [x] **FOUND-02**: Tailwind CSS v4 configured with CSS-first setup (no `tailwind.config.js`)
 - [x] **FOUND-03**: DaisyUI v5 configured as Tailwind plugin in CSS
 - [x] **FOUND-04**: `@sveltejs/adapter-node` configured for production Docker/self-hosted deployment
-- [ ] **FOUND-05**: Base root layout (`+layout.svelte`) with mobile-responsive navigation using DaisyUI components
-- [ ] **FOUND-06**: Home page (`+page.svelte`) demonstrating the stack is working (not a blank page)
-- [ ] **FOUND-07**: Error page (`+error.svelte`) with DaisyUI styling
+- [x] **FOUND-05**: Base root layout (`+layout.svelte`) with mobile-responsive navigation using DaisyUI components
+- [x] **FOUND-06**: Home page (`+page.svelte`) demonstrating the stack is working (not a blank page)
+- [x] **FOUND-07**: Error page (`+error.svelte`) with DaisyUI styling
 
 ### Code Quality
 
@@ -109,9 +109,9 @@
 | FOUND-02    | Phase 1: Foundation                    | Complete |
 | FOUND-03    | Phase 1: Foundation                    | Complete |
 | FOUND-04    | Phase 1: Foundation                    | Complete |
-| FOUND-05    | Phase 1: Foundation                    | Pending  |
-| FOUND-06    | Phase 1: Foundation                    | Pending  |
-| FOUND-07    | Phase 1: Foundation                    | Pending  |
+| FOUND-05    | Phase 1: Foundation                    | Complete |
+| FOUND-06    | Phase 1: Foundation                    | Complete |
+| FOUND-07    | Phase 1: Foundation                    | Complete |
 | DOCK-01     | Phase 2: Dev Infrastructure & AI Agent | Pending  |
 | ENV-01      | Phase 2: Dev Infrastructure & AI Agent | Pending  |
 | ENV-02      | Phase 2: Dev Infrastructure & AI Agent | Pending  |
