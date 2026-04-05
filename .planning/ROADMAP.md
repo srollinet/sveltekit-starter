@@ -41,7 +41,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 
-- [ ] 01-01-PLAN.md -- Scaffold SvelteKit skeleton and configure adapter-node + TypeScript strict
+- [x] 01-01-PLAN.md -- Scaffold SvelteKit skeleton and configure adapter-node + TypeScript strict
 - [ ] 01-02-PLAN.md -- Install and configure Tailwind CSS v4 + DaisyUI v5 (CSS-first)
 - [ ] 01-03-PLAN.md -- Build root layout (navbar + drawer + theme toggle), home page, error page
 - [ ] 01-04-PLAN.md -- Automated build verification + human visual sign-off

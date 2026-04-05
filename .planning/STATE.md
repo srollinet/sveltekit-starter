@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: verifying
+stopped_at: Completed 01-foundation-01-PLAN.md
+last_updated: '2026-04-05T18:00:00.328Z'
+last_activity: 2026-04-05
+progress:
+  total_phases: 8
+  completed_phases: 0
+  total_plans: 4
+  completed_plans: 1
+  percent: 25
+---
+
 # Project State
 
 ## Project Reference
@@ -11,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-04-05)
 
 Phase: 1 of 8 (Foundation)
 Plan: 0 of 0 in current phase (not yet planned)
-Status: Ready to plan
-Last activity: 2026-04-05 -- Roadmap revised (Phase 2 reorder)
+Status: Phase complete — ready for verification
+Last activity: 2026-04-05
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -36,6 +52,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: -
 
 _Updated after each plan completion_
+| Phase 01-foundation P01 | 4 | 2 tasks | 24 files |
 
 ## Accumulated Context
 
@@ -50,6 +67,10 @@ Recent decisions affecting current work:
 - [Roadmap revision]: Production Docker (DOCK-02, DOCK-03, DOCK-04) isolated as Phase 8 -- dev infrastructure is early, production packaging is last
 - [Roadmap]: Code Quality (Phase 3) placed before Database (Phase 4) to enforce lint/format from the start of DB work
 - [Roadmap]: CLAUDE.md written early in Phase 2 with known info; updated in Phase 8 with finalized details
+- [Phase 01-foundation]: Use adapter-node (not adapter-auto) for Docker/self-hosted deployment
+- [Phase 01-foundation]: Pin prettier to 3.8.1 across all plans; do not allow scaffold to override
+- [Phase 01-foundation]: pnpm-workspace.yaml is the correct location for pnpm minimumReleaseAgeExclude settings (not .npmrc)
+- [Phase 01-foundation]: Upgrade vite to ^8.0.0 for @sveltejs/vite-plugin-svelte@7.0.0 peer compatibility
 
 ### Pending Todos
 
@@ -62,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-05
-Stopped at: Roadmap revised, ready to plan Phase 1
+Last session: 2026-04-05T18:00:00.327Z
+Stopped at: Completed 01-foundation-01-PLAN.md
 Resume file: None
