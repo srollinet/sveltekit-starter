@@ -150,11 +150,7 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   DATABASE_URL: z.string().url(),
-  OTEL_EXPORTER_OTLP_ENDPOINT: z
-    .string()
-    .url()
-    .optional()
-    .default('http://localhost:4318'),
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional().default('http://localhost:4318'),
 });
 
 // Use $env/dynamic/private so values are read at runtime, not baked at build

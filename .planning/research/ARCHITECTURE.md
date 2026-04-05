@@ -172,13 +172,9 @@ import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { Resource } from '@opentelemetry/resources';
-import {
-  ATTR_SERVICE_NAME,
-  ATTR_SERVICE_VERSION,
-} from '@opentelemetry/semantic-conventions';
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 
-const otlpEndpoint =
-  process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318';
+const otlpEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318';
 
 const sdk = new NodeSDK({
   resource: new Resource({
@@ -240,13 +236,8 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   DATABASE_URL: z.string().url(),
-  OTEL_EXPORTER_OTLP_ENDPOINT: z
-    .string()
-    .url()
-    .default('http://localhost:4318'),
-  NODE_ENV: z
-    .enum(['development', 'production', 'test'])
-    .default('development'),
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().default('http://localhost:4318'),
+  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
 
 export const env = envSchema.parse(process.env);
@@ -271,10 +262,7 @@ const handleSecurity: Handle = async ({ event, resolve }) => {
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  response.headers.set(
-    'Permissions-Policy',
-    'camera=(), microphone=(), geolocation=()',
-  );
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   // CSP set here or via svelte.config.js csp option
   return response;
 };
@@ -353,10 +341,7 @@ export async function GET() {
     await db.execute(sql`SELECT 1`);
     return json({ status: 'healthy', database: 'connected' });
   } catch (err) {
-    return json(
-      { status: 'unhealthy', database: 'disconnected' },
-      { status: 503 },
-    );
+    return json({ status: 'unhealthy', database: 'disconnected' }, { status: 503 });
   }
 }
 ```

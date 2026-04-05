@@ -2,8 +2,7 @@
 phase: 01-foundation
 plan: '01'
 subsystem: infra
-tags:
-  [sveltekit, svelte5, vite, typescript, adapter-node, eslint, prettier, playwright, vitest, pnpm]
+tags: [sveltekit, svelte5, vite, typescript, adapter-node, eslint, prettier, playwright, vitest, pnpm]
 
 # Dependency graph
 requires: []
