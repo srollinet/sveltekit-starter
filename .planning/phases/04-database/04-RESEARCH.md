@@ -392,17 +392,17 @@ pnpm run db:studio
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Does `sv add drizzle` scaffold a `schema/index.ts` barrel or only `schema.ts`?**
    - What we know: CLI doc page doesn't show exact generated file contents
    - What's unclear: Whether the barrel file needs to be created manually
-   - Recommendation: Plan for manual creation; if CLI creates it, skip that task
+   - **RESOLVED:** Plan handles both outcomes — Task 2 of 04-01 creates `schema/index.ts` barrel regardless and deletes the flat `schema.ts` if present. Both scaffold outcomes are covered by defensive task design.
 
 2. **Does `sv add drizzle` add `db:*` package.json scripts automatically?**
    - What we know: The CLI is designed to set up a working Drizzle integration
    - What's unclear: Whether script injection is part of the adder
-   - Recommendation: Plan to add scripts manually; verify after running `sv add drizzle` and remove task if already present
+   - **RESOLVED:** Plan handles both outcomes — Task 3 of 04-01 verifies the four scripts exist and adds any missing ones; it is a no-op if the scaffold already added them. Both scaffold outcomes are covered by defensive task design.
 
 ---
 
