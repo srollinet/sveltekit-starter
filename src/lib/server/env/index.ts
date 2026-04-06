@@ -12,4 +12,5 @@ if (!result.success) {
   process.exit(1);
 }
 
+/** @public */
 export const env = result.data;

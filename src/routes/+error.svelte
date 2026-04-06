@@ -3,7 +3,7 @@
   import { resolve } from '$app/paths';
 </script>
 
-<div class="min-h-[60vh] flex items-center justify-center px-4">
+<div class="flex min-h-[60vh] items-center justify-center px-4">
   <div class="text-center">
     <div class="text-base-content/20 mb-4 text-8xl font-bold">
       {$page.status}

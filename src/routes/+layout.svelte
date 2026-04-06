@@ -34,7 +34,7 @@
   />
 
   <div class="drawer-content flex flex-col">
-    <div class="navbar bg-base-100 shadow-sm sticky top-0 z-10">
+    <div class="navbar bg-base-100 sticky top-0 z-10 shadow-sm">
       <div class="navbar-start">
         <label
           for="nav-drawer"
@@ -120,7 +120,7 @@
       aria-label="Close menu"
       class="drawer-overlay"
     ></label>
-    <ul class="menu bg-base-200 min-h-full w-64 p-4 gap-1">
+    <ul class="menu bg-base-200 min-h-full w-64 gap-1 p-4">
       <li class="menu-title">Navigation</li>
       <li><a href={resolve('/')}>Home</a></li>
     </ul>
