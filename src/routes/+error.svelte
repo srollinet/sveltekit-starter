@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
+  import { resolve } from '$app/paths';
 </script>
 
 <div class="min-h-[60vh] flex items-center justify-center px-4">
@@ -13,6 +14,6 @@
     <p class="text-base-content/60 mb-8">
       {$page.error?.message ?? 'An unexpected error occurred.'}
     </p>
-    <a href="/" class="btn btn-primary">Back to home</a>
+    <a href={resolve('/')} class="btn btn-primary">Back to home</a>
   </div>
 </div>

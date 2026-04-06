@@ -1,8 +1,6 @@
 import { env as rawEnv } from '$env/dynamic/private';
 import { envSchema } from './schema.js';
 
-export { envSchema } from './schema.js';
-
 const result = envSchema.safeParse(rawEnv);
 
 if (!result.success) {

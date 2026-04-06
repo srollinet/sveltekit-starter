@@ -66,7 +66,7 @@
   </div>
 
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-    {#each stackItems as item}
+    {#each stackItems as item (item.title)}
       <div class="card bg-base-100 border-base-200 border shadow-md">
         <div class="card-body">
           <div class="flex items-start justify-between gap-2">

@@ -20,10 +20,12 @@
   "author": "SRoll",
   "packageManager": "pnpm@10.33.0",
   "lint-staged": {
+    "*.{js,ts,svelte,css}": "eslint --fix",
     "*": "prettier --ignore-unknown --write"
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.3",
+    "@eslint/css": "^1.1.0",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.59.1",
     "@sveltejs/adapter-node": "^5.5.4",

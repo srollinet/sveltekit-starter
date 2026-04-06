@@ -1,6 +1,7 @@
 <script lang="ts">
   import '../app.css';
   import { onMount } from 'svelte';
+  import { resolve } from '$app/paths';
 
   let { children } = $props();
   let theme = $state('light');
@@ -34,12 +35,12 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </label>
-        <a href="/" class="btn btn-ghost text-xl font-bold">SvelteKit Starter</a>
+        <a href={resolve('/')} class="btn btn-ghost text-xl font-bold">SvelteKit Starter</a>
       </div>
 
       <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
-          <li><a href="/">Home</a></li>
+          <li><a href={resolve('/')}>Home</a></li>
         </ul>
       </div>
 
@@ -89,7 +90,7 @@
     <label for="nav-drawer" aria-label="Close menu" class="drawer-overlay"></label>
     <ul class="menu bg-base-200 min-h-full w-64 p-4 gap-1">
       <li class="menu-title">Navigation</li>
-      <li><a href="/">Home</a></li>
+      <li><a href={resolve('/')}>Home</a></li>
     </ul>
   </div>
 </div>
