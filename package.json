@@ -52,6 +52,7 @@
     "vitest": "^4.1.2"
   },
   "dependencies": {
-    "daisyui": "^5.5.19"
+    "daisyui": "^5.5.19",
+    "zod": "^4.3.6"
   }
 }
