@@ -3,8 +3,10 @@
   import { onMount } from 'svelte';
   import { resolve } from '$app/paths';
 
+  type Theme = 'light' | 'dark';
+
   let { children } = $props();
-  let theme = $state('light');
+  let theme = $state<Theme>('dark');
 
   onMount(() => {
     const saved = localStorage.getItem('theme');
