@@ -35,7 +35,7 @@
 ```css
 /* src/app.css */
 @import 'tailwindcss';
-@plugin "daisyui";
+@plugin 'daisyui';
 ```
 
 No `@tailwind base/components/utilities` directives. Tailwind v4 auto-detects content files.

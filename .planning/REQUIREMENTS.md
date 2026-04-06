@@ -17,12 +17,12 @@
 
 ### Code Quality
 
-- [ ] **QUAL-01**: ESLint configured with SvelteKit-appropriate flat config (`eslint.config.js`)
-- [ ] **QUAL-02**: Prettier configured with `prettier-plugin-svelte` and consistent formatting rules
-- [ ] **QUAL-03**: Husky v9 installed with `pre-commit` hook running lint-staged
-- [ ] **QUAL-04**: lint-staged configured to run ESLint + Prettier only on staged `.ts`, `.svelte`, `.js` files
-- [ ] **QUAL-05**: Knip configured for SvelteKit's file-based routing entry points; `knip` script in `package.json`
-- [ ] **QUAL-06**: All quality tools pass on a clean checkout (no pre-existing lint errors)
+- [x] **QUAL-01**: ESLint configured with SvelteKit-appropriate flat config (`eslint.config.js`)
+- [x] **QUAL-02**: Prettier configured with `prettier-plugin-svelte` and consistent formatting rules
+- [x] **QUAL-03**: Husky v9 installed with `pre-commit` hook running lint-staged
+- [x] **QUAL-04**: lint-staged configured to run ESLint + Prettier only on staged `.ts`, `.svelte`, `.js` files
+- [x] **QUAL-05**: Knip configured for SvelteKit's file-based routing entry points; `knip` script in `package.json`
+- [x] **QUAL-06**: All quality tools pass on a clean checkout (no pre-existing lint errors)
 
 ### Database
 
@@ -118,12 +118,12 @@
 | ENV-03      | Phase 2: Dev Infrastructure & AI Agent | Pending  |
 | AI-01       | Phase 2: Dev Infrastructure & AI Agent | Pending  |
 | AI-02       | Phase 2: Dev Infrastructure & AI Agent | Pending  |
-| QUAL-01     | Phase 3: Code Quality                  | Pending  |
-| QUAL-02     | Phase 3: Code Quality                  | Pending  |
-| QUAL-03     | Phase 3: Code Quality                  | Pending  |
-| QUAL-04     | Phase 3: Code Quality                  | Pending  |
-| QUAL-05     | Phase 3: Code Quality                  | Pending  |
-| QUAL-06     | Phase 3: Code Quality                  | Pending  |
+| QUAL-01     | Phase 3: Code Quality                  | Complete |
+| QUAL-02     | Phase 3: Code Quality                  | Complete |
+| QUAL-03     | Phase 3: Code Quality                  | Complete |
+| QUAL-04     | Phase 3: Code Quality                  | Complete |
+| QUAL-05     | Phase 3: Code Quality                  | Complete |
+| QUAL-06     | Phase 3: Code Quality                  | Complete |
 | DB-01       | Phase 4: Database                      | Pending  |
 | DB-02       | Phase 4: Database                      | Pending  |
 | DB-03       | Phase 4: Database                      | Pending  |

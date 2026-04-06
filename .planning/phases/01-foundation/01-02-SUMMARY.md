@@ -89,7 +89,7 @@ completed: '2026-04-05'
 
 ```css
 @import 'tailwindcss';
-@plugin "daisyui" {
+@plugin 'daisyui' {
   themes:
     light --default,
     dark;
