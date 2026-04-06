@@ -14,6 +14,9 @@
     <p class="text-base-content/60 mb-8">
       {$page.error?.message ?? 'An unexpected error occurred.'}
     </p>
-    <a href={resolve('/')} class="btn btn-primary">Back to home</a>
+    <a
+      href={resolve('/')}
+      class="btn btn-primary">Back to home</a
+    >
   </div>
 </div>

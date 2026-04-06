@@ -27,17 +27,39 @@
 </script>
 
 <div class="drawer">
-  <input id="nav-drawer" type="checkbox" class="drawer-toggle" />
+  <input
+    id="nav-drawer"
+    type="checkbox"
+    class="drawer-toggle"
+  />
 
   <div class="drawer-content flex flex-col">
     <div class="navbar bg-base-100 shadow-sm sticky top-0 z-10">
       <div class="navbar-start">
-        <label for="nav-drawer" class="btn btn-ghost lg:hidden" aria-label="Open menu">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        <label
+          for="nav-drawer"
+          class="btn btn-ghost lg:hidden"
+          aria-label="Open menu"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           </svg>
         </label>
-        <a href={resolve('/')} class="btn btn-ghost text-xl font-bold">SvelteKit Starter</a>
+        <a
+          href={resolve('/')}
+          class="btn btn-ghost text-xl font-bold">SvelteKit Starter</a
+        >
       </div>
 
       <div class="navbar-center hidden lg:flex">
@@ -47,7 +69,11 @@
       </div>
 
       <div class="navbar-end">
-        <button class="btn btn-ghost btn-circle" onclick={toggleTheme} aria-label="Toggle theme">
+        <button
+          class="btn btn-ghost btn-circle"
+          onclick={toggleTheme}
+          aria-label="Toggle theme"
+        >
           {#if theme === 'light'}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -89,7 +115,11 @@
   </div>
 
   <div class="drawer-side z-20">
-    <label for="nav-drawer" aria-label="Close menu" class="drawer-overlay"></label>
+    <label
+      for="nav-drawer"
+      aria-label="Close menu"
+      class="drawer-overlay"
+    ></label>
     <ul class="menu bg-base-200 min-h-full w-64 p-4 gap-1">
       <li class="menu-title">Navigation</li>
       <li><a href={resolve('/')}>Home</a></li>

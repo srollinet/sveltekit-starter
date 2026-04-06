@@ -1,5 +1,6 @@
 {
   "trailingComma": "all",
+  "singleAttributePerLine": true,
   "plugins": ["prettier-plugin-svelte"],
   "overrides": [
     {
