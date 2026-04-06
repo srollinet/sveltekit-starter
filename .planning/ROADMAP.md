@@ -60,7 +60,14 @@ Plans:
 3. The app starts successfully when all env vars are set; it crashes immediately with a clear Zod error when a required var is missing
 4. `CLAUDE.md` at the project root documents the tech stack, planned folder structure, key commands, and coding conventions (some commands marked TBD until later phases fill them in)
 5. `.claude/settings.json` includes the `@sveltejs/mcp` server configuration so Claude Code has Svelte/SvelteKit docs available
-   **Plans**: TBD
+
+**Plans**: 3 plans
+
+Plans:
+
+- [ ] 02-01-PLAN.md -- Vitest config + Zod env validation with unit tests + hooks.server.ts
+- [ ] 02-02-PLAN.md -- Docker Compose dev stack (PostgreSQL + Aspire Dashboard) + .env.example
+- [ ] 02-03-PLAN.md -- CLAUDE-DEV.md developer quick-reference + MCP config in .claude/settings.json
 
 ### Phase 3: Code Quality
 
@@ -147,7 +154,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | Phase                            | Plans Complete | Status      | Completed  |
 | -------------------------------- | -------------- | ----------- | ---------- |
 | 1. Foundation                    | 4/4            | Done        | 2026-04-05 |
-| 2. Dev Infrastructure & AI Agent | 0/0            | Not started | -          |
+| 2. Dev Infrastructure & AI Agent | 0/3            | Planned     | -          |
 | 3. Code Quality                  | 0/0            | Not started | -          |
 | 4. Database                      | 0/0            | Not started | -          |
 | 5. Observability                 | 0/0            | Not started | -          |
