@@ -103,7 +103,7 @@ Plans:
 
 Plans:
 
-- [ ] 04-01-PLAN.md -- Scaffold Drizzle ORM, create posts schema with UUIDv7, DB client singleton, and db:\* scripts
+- [x] 04-01-PLAN.md -- Scaffold Drizzle ORM, create posts schema with UUIDv7, DB client singleton, and db:\* scripts
 - [ ] 04-02-PLAN.md -- Push schema to PostgreSQL, generate first migration, verify migration applies cleanly
 
 ### Phase 5: Observability
@@ -167,7 +167,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 1. Foundation                    | 4/4            | Done        | 2026-04-05 |
 | 2. Dev Infrastructure & AI Agent | 0/3            | Planned     | -          |
 | 3. Code Quality                  | 1/1            | Complete    | 2026-04-06 |
-| 4. Database                      | 0/2 | Planned    |  |
+| 4. Database                      | 1/2 | In Progress|  |
 | 5. Observability                 | 0/0            | Not started | -          |
 | 6. Security                      | 0/0            | Not started | -          |
 | 7. Testing                       | 0/0            | Not started | -          |
