@@ -27,12 +27,12 @@
 ### Database
 
 - [ ] **DB-01**: PostgreSQL 17 service defined in `docker-compose.yml` with named volume persistence and health check
-- [ ] **DB-02**: `postgres.js` driver installed and configured as the PostgreSQL client
-- [ ] **DB-03**: Drizzle ORM configured with a `drizzle.config.ts` pointing to `src/lib/server/db/schema/`
-- [ ] **DB-04**: Initial Drizzle schema file with at least one example table demonstrating the pattern
+- [x] **DB-02**: `postgres.js` driver installed and configured as the PostgreSQL client
+- [x] **DB-03**: Drizzle ORM configured with a `drizzle.config.ts` pointing to `src/lib/server/db/schema/`
+- [x] **DB-04**: Initial Drizzle schema file with at least one example table demonstrating the pattern
 - [ ] **DB-05**: First migration generated and committed to `drizzle/` directory
-- [ ] **DB-06**: `drizzle-kit` scripts in `package.json`: `db:generate`, `db:migrate`, `db:push`, `db:studio`
-- [ ] **DB-07**: Database client singleton in `src/lib/server/db/index.ts` (module-level, not per-request)
+- [x] **DB-06**: `drizzle-kit` scripts in `package.json`: `db:generate`, `db:migrate`, `db:push`, `db:studio`
+- [x] **DB-07**: Database client singleton in `src/lib/server/db/index.ts` (module-level, not per-request)
 
 ### Environment & Configuration
 
@@ -125,12 +125,12 @@
 | QUAL-05     | Phase 3: Code Quality                  | Complete |
 | QUAL-06     | Phase 3: Code Quality                  | Complete |
 | DB-01       | Phase 4: Database                      | Pending  |
-| DB-02       | Phase 4: Database                      | Pending  |
-| DB-03       | Phase 4: Database                      | Pending  |
-| DB-04       | Phase 4: Database                      | Pending  |
+| DB-02       | Phase 4: Database                      | Complete |
+| DB-03       | Phase 4: Database                      | Complete |
+| DB-04       | Phase 4: Database                      | Complete |
 | DB-05       | Phase 4: Database                      | Pending  |
-| DB-06       | Phase 4: Database                      | Pending  |
-| DB-07       | Phase 4: Database                      | Pending  |
+| DB-06       | Phase 4: Database                      | Complete |
+| DB-07       | Phase 4: Database                      | Complete |
 | OBS-01      | Phase 5: Observability                 | Pending  |
 | OBS-02      | Phase 5: Observability                 | Pending  |
 | OBS-03      | Phase 5: Observability                 | Pending  |
