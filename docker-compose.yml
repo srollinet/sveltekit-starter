@@ -2,16 +2,12 @@ services:
   postgres:
     image: postgres:17-alpine
     env_file: .env.development
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,7 +20,7 @@ services:
       - '4317:18889'
       - '4318:18890'
     environment:
-      DASHBOARD__UNSECUREDALLOWEDLIST: '*'
+      ASPIRE_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: 'true'
 
 volumes:
   postgres_data:
