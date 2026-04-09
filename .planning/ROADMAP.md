@@ -117,7 +117,13 @@ Plans:
 2. `GET /api/health` returns JSON with `status`, `db`, and `timestamp` fields -- returns healthy when DB is up, unhealthy (503) when DB is down
 3. Application logs are structured JSON (not plain text) and include trace correlation IDs
 4. The OTEL SDK initializes in `instrumentation.server.ts` before any app code loads (verified by traces existing for the first request after cold start)
-   **Plans**: TBD
+
+**Plans**: 2 plans
+
+Plans:
+
+- [ ] 05-01-PLAN.md -- OTEL SDK + selective auto-instrumentation + pino structured logging + env vars + hooks enrichment
+- [ ] 05-02-PLAN.md -- Health check endpoint (GET /api/health) with DB connectivity check
 
 ### Phase 6: Security
 
@@ -168,7 +174,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 2. Dev Infrastructure & AI Agent | 3/3            | Complete    | 2026-04-09 |
 | 3. Code Quality                  | 1/1            | Complete    | 2026-04-06 |
 | 4. Database                      | 2/2            | Complete    | 2026-04-07 |
-| 5. Observability                 | 0/0            | Not started | -          |
+| 5. Observability                 | 0/2            | Planned     | -          |
 | 6. Security                      | 0/0            | Not started | -          |
 | 7. Testing                       | 0/0            | Not started | -          |
 | 8. Production Docker             | 0/0            | Not started | -          |

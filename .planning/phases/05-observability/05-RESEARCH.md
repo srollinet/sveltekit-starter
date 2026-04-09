@@ -602,22 +602,25 @@ process.on('SIGTERM', () => {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **`db.$client` accessor in Drizzle 0.45.x**
    - What we know: Drizzle exposes the underlying driver; the exact accessor name may be `.$client`, `.$driver`, or requires a separate export
    - What's unclear: The exact property name in drizzle-orm 0.45.x for the postgres.js `sql` object
    - Recommendation: At task execution time, run `console.log(Object.keys(db))` or check drizzle-orm source; if absent, export `client` from db/index.ts
+   - **RESOLVED:** Plan 05-02 Task 1 exports `client` directly from `src/lib/server/db/index.ts`, sidestepping the accessor ambiguity entirely.
 
 2. **Whether `experimental.tracing` + `experimental.instrumentation` will be stabilized before release**
    - What we know: Both are flagged as "experimental, subject to change without notice" in official docs
    - What's unclear: Timeline for promotion out of experimental in SvelteKit 2.x
    - Recommendation: Proceed with experimental flags; add a comment in svelte.config.js noting they are experimental; monitor SvelteKit changelog
+   - **RESOLVED:** Plan 05-01 Task 4 proceeds with both experimental flags and adds an inline comment in svelte.config.js noting experimental status.
 
 3. **pino transport in dev mode**
    - What we know: `pino-pretty` provides human-readable output; requires a separate devDependency
    - What's unclear: Whether the planner should include `pino-pretty` in Wave 0 or leave as optional
    - Recommendation: Use pino without transport for Phase 5; add `pino-pretty` as a follow-up if developer UX requires it
+   - **RESOLVED:** Plan 05-01 Task 1 explicitly excludes `pino-pretty`; JSON-only output is used for Phase 5.
 
 ---
 
