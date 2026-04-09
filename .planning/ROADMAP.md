@@ -14,9 +14,9 @@ This roadmap delivers a production-quality SvelteKit starter template in 8 phase
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - SvelteKit + Tailwind + DaisyUI + TypeScript strict + adapter-node + base pages
-- [ ] **Phase 2: Dev Infrastructure & AI Agent** - Docker Compose dev stack (PostgreSQL + Aspire) + env config + CLAUDE.md + MCP config
+- [x] **Phase 2: Dev Infrastructure & AI Agent** - Docker Compose dev stack (PostgreSQL + Aspire) + env config + CLAUDE.md + MCP config (completed 2026-04-09)
 - [x] **Phase 3: Code Quality** - ESLint + Prettier + Husky + lint-staged + Knip configured and passing (completed 2026-04-06)
-- [ ] **Phase 4: Database** - Drizzle ORM + initial schema + migrations + DB client singleton (PostgreSQL already running from Phase 2)
+- [x] **Phase 4: Database** - Drizzle ORM + initial schema + migrations + DB client singleton (PostgreSQL already running from Phase 2) (completed 2026-04-07)
 - [ ] **Phase 5: Observability** - OTEL SDK + instrumentation.server.ts + structured logging + health check (Aspire already running from Phase 2)
 - [ ] **Phase 6: Security** - HTTP headers via nosecone + CSRF + server-only enforcement + hooks pipeline
 - [ ] **Phase 7: Testing** - Vitest + component tests + API integration tests + Playwright E2E
@@ -65,9 +65,9 @@ Plans:
 
 Plans:
 
-- [ ] 02-01-PLAN.md -- Vitest config + Zod env validation with unit tests + hooks.server.ts
-- [ ] 02-02-PLAN.md -- Docker Compose dev stack (PostgreSQL + Aspire Dashboard) + .env.example
-- [ ] 02-03-PLAN.md -- CLAUDE-DEV.md developer quick-reference + MCP config in .claude/settings.json
+- [x] 02-01-PLAN.md -- Vitest config + Zod env validation with unit tests + hooks.server.ts
+- [x] 02-02-PLAN.md -- Docker Compose dev stack (PostgreSQL + Aspire Dashboard) + .env.example
+- [x] 02-03-PLAN.md -- CLAUDE-DEV.md developer quick-reference + MCP config in .claude/settings.json
 
 ### Phase 3: Code Quality
 
@@ -104,7 +104,7 @@ Plans:
 Plans:
 
 - [x] 04-01-PLAN.md -- Scaffold Drizzle ORM, create posts schema with UUIDv7, DB client singleton, and db:\* scripts
-- [ ] 04-02-PLAN.md -- Push schema to PostgreSQL, generate first migration, verify migration applies cleanly
+- [x] 04-02-PLAN.md -- Push schema to PostgreSQL, generate first migration, verify migration applies cleanly
 
 ### Phase 5: Observability
 
@@ -165,9 +165,9 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | Phase                            | Plans Complete | Status      | Completed  |
 | -------------------------------- | -------------- | ----------- | ---------- |
 | 1. Foundation                    | 4/4            | Done        | 2026-04-05 |
-| 2. Dev Infrastructure & AI Agent | 0/3            | Planned     | -          |
+| 2. Dev Infrastructure & AI Agent | 3/3            | Complete    | 2026-04-09 |
 | 3. Code Quality                  | 1/1            | Complete    | 2026-04-06 |
-| 4. Database                      | 1/2 | In Progress|  |
+| 4. Database                      | 2/2            | Complete    | 2026-04-07 |
 | 5. Observability                 | 0/0            | Not started | -          |
 | 6. Security                      | 0/0            | Not started | -          |
 | 7. Testing                       | 0/0            | Not started | -          |
