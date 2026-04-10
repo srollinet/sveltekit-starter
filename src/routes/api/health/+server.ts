@@ -23,7 +23,7 @@ export const GET: RequestHandler = async () => {
 
     return json({ status: 'ok', db: 'ok', timestamp }, { status: 200 });
   } catch (err: unknown) {
-    logger.error({ err }, 'Health check DB query failed');
+    logger.error({ err: err instanceof Error ? err : new Error(String(err)) }, 'Health check DB query failed');
     return json({ status: 'error', db: 'error', timestamp }, { status: 503 });
   }
 };
