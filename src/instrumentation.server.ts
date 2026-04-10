@@ -68,8 +68,14 @@ const sdk = new NodeSDK({
 sdk.start();
 
 // Graceful shutdown on SIGTERM (e.g. Docker stop)
+// Hold process open until SDK flushes buffered spans before exiting
 process.on('SIGTERM', () => {
-  sdk.shutdown().catch((err: unknown) => {
-    console.error('Error shutting down OTEL SDK:', err);
-  });
+  sdk
+    .shutdown()
+    .catch((err: unknown) => {
+      console.error('Error shutting down OTEL SDK:', err);
+    })
+    .finally(() => {
+      process.exit(0);
+    });
 });
