@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Dev Infrastructure & AI Agent** - Docker Compose dev stack (PostgreSQL + Aspire) + env config + CLAUDE.md + MCP config (completed 2026-04-09)
 - [x] **Phase 3: Code Quality** - ESLint + Prettier + Husky + lint-staged + Knip configured and passing (completed 2026-04-06)
 - [x] **Phase 4: Database** - Drizzle ORM + initial schema + migrations + DB client singleton (PostgreSQL already running from Phase 2) (completed 2026-04-07)
-- [ ] **Phase 5: Observability** - OTEL SDK + instrumentation.server.ts + structured logging + health check (Aspire already running from Phase 2)
+- [x] **Phase 5: Observability** - OTEL SDK + instrumentation.server.ts + structured logging + health check (Aspire already running from Phase 2) (completed 2026-04-10)
 - [ ] **Phase 6: Security** - HTTP headers via nosecone + CSRF + server-only enforcement + hooks pipeline
 - [ ] **Phase 7: Testing** - Vitest + component tests + API integration tests + Playwright E2E
 - [ ] **Phase 8: Production Docker** - Multi-stage production Dockerfile + docker-compose finalization
@@ -122,8 +122,8 @@ Plans:
 
 Plans:
 
-- [ ] 05-01-PLAN.md -- OTEL SDK + selective auto-instrumentation + pino structured logging + env vars + hooks enrichment
-- [ ] 05-02-PLAN.md -- Health check endpoint (GET /api/health) with DB connectivity check
+- [x] 05-01-PLAN.md -- OTEL SDK + selective auto-instrumentation + pino structured logging + env vars + hooks enrichment
+- [x] 05-02-PLAN.md -- Health check endpoint (GET /api/health) with DB connectivity check
 
 ### Phase 6: Security
 
