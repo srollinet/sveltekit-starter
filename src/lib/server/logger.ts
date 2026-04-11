@@ -33,11 +33,6 @@ export const logger = pino({
       trace_flags: ctx.traceFlags,
     };
   },
-  formatters: {
-    level(label: string) {
-      // Return label string instead of numeric level for readability
-      return { level: label };
-    },
-  },
+  // formatters.level is incompatible with transport.targets (pino restriction)
   transport: { targets: transportTargets },
 });
