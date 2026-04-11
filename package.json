@@ -62,6 +62,11 @@
     "vite": "^8.0.5",
     "vitest": "^4.1.2"
   },
+  "pnpm": {
+    "overrides": {
+      "@opentelemetry/api": "^1.9.1"
+    }
+  },
   "dependencies": {
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/auto-instrumentations-node": "^0.72.0",
