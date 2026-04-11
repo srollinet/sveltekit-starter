@@ -1,69 +1,50 @@
 ---
 phase: 05-observability
-fixed_at: 2026-04-11T09:57:54Z
+fixed_at: 2026-04-11T10:06:16Z
 review_path: .planning/phases/05-observability/05-REVIEW.md
-iteration: 3
-findings_in_scope: 5
-fixed: 4
-skipped: 1
-status: partial
+iteration: 1
+findings_in_scope: 1
+fixed: 1
+skipped: 0
+status: all_fixed
 ---
 
 # Phase 05: Code Review Fix Report
 
-**Fixed at:** 2026-04-11T09:57:54Z
+**Fixed at:** 2026-04-11T10:06:16Z
 **Source review:** .planning/phases/05-observability/05-REVIEW.md
-**Iteration:** 3
+**Iteration:** 1
 
 **Summary:**
-- Findings in scope: 5
-- Fixed: 4
-- Skipped: 1 (previously fixed)
+- Findings in scope: 1 (CR-01 only; IN-01 and IN-02 are Info severity, excluded by fix_scope=critical_warning)
+- Fixed: 1
+- Skipped: 0
 
 ## Fixed Issues
 
-### IN-01: `logger.ts` reads `LOG_LEVEL` directly from `process.env`, bypassing Zod validation
+### CR-01: Logs are not exported to OpenTelemetry — LoggerProvider and log exporter are absent
 
-**Files modified:** `src/lib/server/logger.ts`
-**Commit:** 71a2cfe
-**Applied fix:** Added `import { env } from '$lib/server/env'` and replaced `process.env.LOG_LEVEL ?? 'info'` with `env.LOG_LEVEL`. The validated env module provides a Zod-enforced enum value with a default, so invalid values like `LOG_LEVEL=verbose` now cause a startup error rather than passing silently to Pino.
+**Files modified:** `package.json`, `pnpm-lock.yaml`, `src/instrumentation.server.ts`, `src/lib/server/logger.ts`
 
----
+**Commits:**
+- `a3ebaab` — install `@opentelemetry/sdk-logs`, `@opentelemetry/exporter-logs-otlp-proto`, `pino-opentelemetry-transport`
+- `9db3cc6` — wire `BatchLogRecordProcessor` + `OTLPLogExporter` into `NodeSDK` via `logRecordProcessors`
+- `d23cfba` — bridge Pino to OTEL log export via `pino-opentelemetry-transport` transport target
 
-### IN-02: Stale comment in `.env.example` references Phase 4
+**Applied fix:**
 
-**Files modified:** `.env.example`
-**Commit:** 2aadfd8
-**Applied fix:** Updated comment on line 14 from `# Full connection URL consumed by the app (and later by Drizzle in Phase 4)` to `# Full connection URL consumed by the app and Drizzle ORM`. Removes the stale phase reference since database integration is complete.
+Three coordinated changes were made:
 
----
+1. **Package installation** (`package.json` / `pnpm-lock.yaml`): Added `@opentelemetry/sdk-logs ^0.214.0`, `@opentelemetry/exporter-logs-otlp-proto ^0.214.0`, and `pino-opentelemetry-transport ^3.0.0` as runtime dependencies.
 
-### IN-03: `svelte.config.js` enables both deprecated `tracing` flag and current `instrumentation` flag
+2. **`src/instrumentation.server.ts`**: Added imports for `OTLPLogExporter` and `BatchLogRecordProcessor`. Extracted a shared `otlpBase` variable (used by both trace and log exporters). Created a `logRecordProcessor` and passed it to `NodeSDK` via the `logRecordProcessors` array option. The `logs.setGlobalLoggerProvider()` call from the review suggestion was omitted — `NodeSDK` manages its internal `LoggerProvider` automatically when `logRecordProcessors` is provided, and `@opentelemetry/api-logs` is not a direct project dependency (only transitive, not resolvable as a direct import). TypeScript confirmed zero errors in the modified file.
 
-**Files modified:** `svelte.config.js`
-**Commit:** dd8adba
-**Applied fix:** Removed the `experimental.tracing: { server: true }` block entirely. Only `experimental.instrumentation: { server: true }` remains, which is the current SvelteKit v2 entry point for `instrumentation.server.ts`.
+3. **`src/lib/server/logger.ts`**: Replaced the bare `pino({...})` call with a multi-target transport configuration. Stdout (`pino/file` to fd 1) is always active. The `pino-opentelemetry-transport` target is added only when `process.env.OTEL_EXPORTER_OTLP_ENDPOINT` is explicitly set — this avoids connection errors in bare local dev without the Aspire container running. The existing `mixin()` is retained for trace correlation fields in stdout JSON.
 
----
-
-### IN-04: `knip.config.ts` permanently suppresses dead-code detection for `src/lib/server/db/index.ts`
-
-**Files modified:** `knip.config.ts`
-**Commit:** 2f69ead
-**Applied fix:** Replaced the generic comment `// DB client singleton — foundational export, no app code imports it yet` with `// TODO: remove when first app route imports db — Knip will then detect it naturally`. This signals to the next developer that the ignore entry should be removed once the db client has a consumer.
+**Adaptation note:** The review suggested `logs.setGlobalLoggerProvider()` via `@opentelemetry/api-logs`. That import is not resolvable as a direct project dependency. The `NodeSDK` `logRecordProcessors` option achieves the same result without requiring the direct import.
 
 ---
 
-## Skipped Issues
-
-### WR-01: `@opentelemetry/api` version may cause split-brain singleton with SDK 2.x
-
-**File:** `package.json:66`
-**Reason:** Previously fixed — `pnpm.overrides` block with `"@opentelemetry/api": "^1.9.1"` already present in `package.json` at the start of this iteration. No change required.
-**Original issue:** `@opentelemetry/api` pinned to `^1.9.1` while SDK 2.x may resolve a different internal copy, risking a split-brain singleton where `trace.getSpan()` silently returns `undefined`.
-
----
-
-_Fixed: 2026-04-11T09:57:54Z_
+_Fixed: 2026-04-11T10:06:16Z_
 _Fixer: Claude (gsd-code-fixer)_
-_Iteration: 3_
+_Iteration: 1_
