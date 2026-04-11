@@ -57,6 +57,27 @@ vite.config.ts               # Vite config with Tailwind + SvelteKit + Vitest
 - **Package manager** — pnpm (not npm or yarn)
 - **Types** — TypeScript strict mode; prefer explicit types over `any`
 
+## Server-Only Modules (`$lib/server/`)
+
+SvelteKit enforces `$lib/server/` as a server-only boundary at **build time**. Any attempt to import a module from `$lib/server/` in client-facing code (e.g., `+page.svelte`, `+layout.svelte`, or any file that runs in the browser) will cause a build error:
+
+```
+Cannot import $lib/server/env.ts into code that runs in the browser
+```
+
+**What goes in `$lib/server/`:**
+- `env.ts` — Zod-validated environment variables (secrets)
+- `db/` — Database client, schema, and query helpers
+- `logger.ts` — Server-side structured logging (pino)
+- Any module that accesses secrets, databases, or server-only APIs
+
+**What stays outside `$lib/server/`:**
+- Shared types and interfaces (used by both client and server)
+- UI utility functions (formatting, validation logic without secrets)
+- Svelte components and stores
+
+This boundary is enforced by SvelteKit's static analysis — no runtime guards needed. Violations are caught by `pnpm run build` and `pnpm run check`.
+
 ## Testing Patterns
 
 - **Unit tests**: `src/**/*.test.ts` — run with `pnpm test:unit` (Vitest)
