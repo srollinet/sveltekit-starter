@@ -4,6 +4,8 @@
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
+import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-proto';
+import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
 import { createAddHookMessageChannel } from 'import-in-the-middle';
 import { register } from 'node:module';
 
@@ -11,14 +13,22 @@ import { register } from 'node:module';
 const { registerOptions } = createAddHookMessageChannel();
 register('import-in-the-middle/hook.mjs', import.meta.url, registerOptions);
 
+// Shared OTLP base URL — NodeSDK reads OTEL_EXPORTER_OTLP_ENDPOINT but does not append paths
+const otlpBase = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://localhost:4318';
+
+// Wire up OTEL log export — BatchLogRecordProcessor ships log records to the collector
+const logRecordProcessor = new BatchLogRecordProcessor(
+  new OTLPLogExporter({ url: otlpBase + '/v1/logs' }),
+);
+
 const sdk = new NodeSDK({
   // NodeSDK reads OTEL_SERVICE_NAME natively — process.env fallback for safety
   serviceName: process.env.OTEL_SERVICE_NAME ?? 'sveltekit-starter',
   traceExporter: new OTLPTraceExporter({
-    // NodeSDK reads OTEL_EXPORTER_OTLP_ENDPOINT natively but does NOT append /v1/traces
-    // Must pass the full path to OTLPTraceExporter explicitly
-    url: (process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://localhost:4318') + '/v1/traces',
+    // Must pass the full path — NodeSDK does NOT append /v1/traces automatically
+    url: otlpBase + '/v1/traces',
   }),
+  logRecordProcessors: [logRecordProcessor],
   instrumentations: [
     getNodeAutoInstrumentations({
       // Enable only HTTP and Node.js native fetch (undici) — per D-04, D-05
