@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Code Quality** - ESLint + Prettier + Husky + lint-staged + Knip configured and passing (completed 2026-04-06)
 - [x] **Phase 4: Database** - Drizzle ORM + initial schema + migrations + DB client singleton (PostgreSQL already running from Phase 2) (completed 2026-04-07)
 - [x] **Phase 5: Observability** - OTEL SDK + instrumentation.server.ts + structured logging + health check (Aspire already running from Phase 2) (completed 2026-04-10)
-- [ ] **Phase 6: Security** - HTTP headers via nosecone + CSRF + server-only enforcement + hooks pipeline
+- [x] **Phase 6: Security** - HTTP headers via nosecone + CSRF + server-only enforcement + hooks pipeline (completed 2026-04-11)
 - [ ] **Phase 7: Testing** - Vitest + component tests + API integration tests + Playwright E2E
 - [ ] **Phase 8: Production Docker** - Multi-stage production Dockerfile + docker-compose finalization
 
@@ -141,7 +141,7 @@ Plans:
 
 Plans:
 
-- [ ] 06-01-PLAN.md -- Install @nosecone/sveltekit, configure nonce-based CSP, refactor hooks.server.ts to 3-handle sequence, document $lib/server/ boundary
+- [x] 06-01-PLAN.md -- Install @nosecone/sveltekit, configure nonce-based CSP, refactor hooks.server.ts to 3-handle sequence, document $lib/server/ boundary
 
 ### Phase 7: Testing
 
@@ -179,7 +179,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 2. Dev Infrastructure & AI Agent | 3/3            | Complete    | 2026-04-09 |
 | 3. Code Quality                  | 1/1            | Complete    | 2026-04-06 |
 | 4. Database                      | 2/2            | Complete    | 2026-04-07 |
-| 5. Observability                 | 0/2            | Planned     | -          |
-| 6. Security                      | 0/1            | Planned     | -          |
+| 5. Observability                 | 2/2            | Complete    | 2026-04-10 |
+| 6. Security                      | 1/1            | Complete    | 2026-04-11 |
 | 7. Testing                       | 0/0            | Not started | -          |
 | 8. Production Docker             | 0/0            | Not started | -          |
