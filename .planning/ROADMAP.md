@@ -154,7 +154,13 @@ Plans:
 2. `pnpm run test:unit` includes an API integration test that hits `GET /api/health` and asserts the response shape
 3. `npx playwright test` passes at least one E2E test that loads the app in a browser and verifies navigation works
 4. All tests pass on a clean checkout with `docker compose up` running (no manual setup beyond that)
-   **Plans**: TBD
+
+**Plans**: 2 plans
+
+Plans:
+
+- [ ] 07-01-PLAN.md -- Vitest workspaces (node + jsdom), StackBadge component + component test, knip cleanup
+- [ ] 07-02-PLAN.md -- Health endpoint integration test (testcontainers) + Playwright E2E smoke test
 
 ### Phase 8: Production Docker
 
@@ -181,5 +187,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 4. Database                      | 2/2            | Complete    | 2026-04-07 |
 | 5. Observability                 | 2/2            | Complete    | 2026-04-10 |
 | 6. Security                      | 1/1            | Complete    | 2026-04-11 |
-| 7. Testing                       | 0/0            | Not started | -          |
+| 7. Testing                       | 0/2            | Not started | -          |
 | 8. Production Docker             | 0/0            | Not started | -          |
