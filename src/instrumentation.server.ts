@@ -64,7 +64,7 @@ const sdk = new NodeSDK({
       '@opentelemetry/instrumentation-openai': { enabled: false },
       '@opentelemetry/instrumentation-oracledb': { enabled: false },
       '@opentelemetry/instrumentation-pg': { enabled: false }, // project uses postgres.js, not pg
-      '@opentelemetry/instrumentation-pino': { enabled: false }, // using manual mixin instead (D-11)
+      '@opentelemetry/instrumentation-pino': { enabled: true }, // bridges pino logs to OTEL LoggerProvider via main thread
       '@opentelemetry/instrumentation-redis': { enabled: false },
       '@opentelemetry/instrumentation-restify': { enabled: false },
       '@opentelemetry/instrumentation-runtime-node': { enabled: false },

@@ -4,26 +4,12 @@ import pino from 'pino';
 import { trace, context } from '@opentelemetry/api';
 import { env } from '$lib/server/env';
 
-// Pino transport targets — always write to stdout; add OTEL transport when
-// OTEL_EXPORTER_OTLP_ENDPOINT is explicitly set so bare local dev (no Aspire
-// container) does not error attempting to connect to a missing collector.
-const transportTargets: pino.TransportTargetOptions[] = [
-  { target: 'pino/file', options: { destination: 1 }, level: env.LOG_LEVEL },
-];
-
-if (process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
-  transportTargets.push({
-    target: 'pino-opentelemetry-transport',
-    options: { loggerName: env.OTEL_SERVICE_NAME },
-    level: env.LOG_LEVEL,
-  });
-}
-
 export const logger = pino({
   level: env.LOG_LEVEL,
   mixin() {
     // Inject trace correlation fields into stdout JSON for local log tailing.
-    // pino-opentelemetry-transport reads OTEL context independently via its own bridge.
+    // @opentelemetry/instrumentation-pino bridges records to the OTEL LoggerProvider
+    // in the main thread — no worker thread transport needed.
     const span = trace.getSpan(context.active());
     if (!span) return {};
     const ctx = span.spanContext();
@@ -33,6 +19,4 @@ export const logger = pino({
       trace_flags: ctx.traceFlags,
     };
   },
-  // formatters.level is incompatible with transport.targets (pino restriction)
-  transport: { targets: transportTargets },
 });
