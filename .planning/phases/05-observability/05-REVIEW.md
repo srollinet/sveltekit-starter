@@ -1,6 +1,6 @@
 ---
 phase: 05-observability
-reviewed: 2026-04-10T12:00:00Z
+reviewed: 2026-04-11T00:00:00Z
 depth: standard
 files_reviewed: 11
 files_reviewed_list:
@@ -10,133 +10,160 @@ files_reviewed_list:
   - src/app.d.ts
   - src/hooks.server.ts
   - src/instrumentation.server.ts
-  - src/lib/server/db/index.ts
   - src/lib/server/env/schema.ts
+  - src/lib/server/db/index.ts
   - src/lib/server/logger.ts
   - src/routes/api/health/+server.ts
   - svelte.config.js
 findings:
-  critical: 0
-  warning: 1
-  info: 4
-  total: 5
+  critical: 1
+  warning: 0
+  info: 2
+  total: 3
 status: issues_found
 ---
 
 # Phase 05: Code Review Report
 
-**Reviewed:** 2026-04-10T12:00:00Z
+**Reviewed:** 2026-04-11T00:00:00Z
 **Depth:** standard
 **Files Reviewed:** 11
 **Status:** issues_found
 
 ## Summary
 
-This phase adds OpenTelemetry tracing, structured logging with Pino, Zod-validated environment variables, a health-check endpoint, and the SvelteKit `instrumentation.server.ts` entry point. Two previously-identified warnings (WR-01: OTEL SDK graceful shutdown, WR-03: raw error object in health endpoint log) have been fixed and are confirmed resolved. No critical issues were found.
+This pass was triggered specifically to investigate whether OTEL log export is implemented. It is not. Traces are fully wired (`instrumentation.server.ts` → `OTLPTraceExporter`), and structured logging with Pino is functional (stdout JSON with trace-correlation fields injected via `mixin()`). However, log records are never shipped to the OTEL collector — there is no `LoggerProvider`, no log exporter, and no relevant packages in `package.json`. This is classified Critical because shipping logs to OTEL is a stated phase requirement.
 
-One warning remains: `@opentelemetry/api` is pinned to `^1.9.1` while the SDK 2.x line may resolve a different internal copy, risking a split-brain singleton where `trace.getSpan()` silently returns `undefined` on every request.
-
-Four info-level items remain open: `logger.ts` reads `LOG_LEVEL` directly from `process.env` instead of the validated `env` module; a stale Phase 4 comment in `.env.example`; `svelte.config.js` enables both the old `tracing` experimental flag and the current `instrumentation` flag; and `knip.config.ts` permanently suppresses dead-code detection for `src/lib/server/db/index.ts`.
+All previously-identified issues from the earlier review pass are confirmed resolved: the pnpm `@opentelemetry/api` override is present (`package.json:65-69`); `logger.ts` correctly reads `env.LOG_LEVEL` from the validated env module; `.env.example` comment is clean; `svelte.config.js` uses only the current `instrumentation` flag; and `knip.config.ts` already carries the TODO comment.
 
 ---
 
-## Warnings
+## Critical Issues
 
-### WR-01: `@opentelemetry/api` version may cause split-brain singleton with SDK 2.x
+### CR-01: Logs are not exported to OpenTelemetry — LoggerProvider and log exporter are absent
 
-**File:** `package.json:66`
+**File:** `src/instrumentation.server.ts:14-65`
 
-**Issue:** `@opentelemetry/api` is pinned to `^1.9.1` in `dependencies`. The `@opentelemetry/sdk-node@^0.214.0` (SDK 2.x line) carries its own internal API dependency. If pnpm resolves two separate copies of `@opentelemetry/api` in `node_modules`, the global singleton used by `trace.getSpan()` and `context.active()` in `hooks.server.ts` and `logger.ts` will refer to a different registry than the one the SDK registered. The symptom is silent: `trace.getSpan(context.active())` returns `undefined` for every request, so the Pino trace-ID mixin always emits empty objects and `event.locals.traceId` is never populated.
+**Issue:** `instrumentation.server.ts` configures only a `traceExporter` (traces). No `LoggerProvider`, no `logRecordProcessor`, and no OTLP log exporter are configured. As a result, Pino log records are written to stdout only and never reach the Aspire Dashboard (or any OTEL collector).
 
-**Fix:** Verify deduplication first:
+The comment on line 57 reads:
+```
+'@opentelemetry/instrumentation-pino': { enabled: false }, // using manual mixin instead (D-11)
+```
+The `mixin()` in `logger.ts` injects `trace_id` / `span_id` fields into stdout JSON — which is useful for log correlation in a log aggregator — but it is not a substitute for OTEL log export. The mixin does not create OTEL `LogRecord` objects and does not send anything to the collector endpoint.
 
+No OTEL log packages are installed:
+- `@opentelemetry/sdk-logs` — absent from `package.json`
+- `@opentelemetry/exporter-logs-otlp-proto` — absent from `package.json`
+- `pino-opentelemetry-transport` — absent from `package.json`
+
+**Fix:** Two complementary steps are required.
+
+**Step 1 — Install packages:**
 ```bash
-pnpm why @opentelemetry/api
+pnpm add @opentelemetry/sdk-logs @opentelemetry/exporter-logs-otlp-proto pino-opentelemetry-transport
 ```
 
-If multiple versions appear, add a pnpm resolution override in `package.json` to force a single copy:
+**Step 2 — Add a `LoggerProvider` to `instrumentation.server.ts`:**
 
-```json
-"pnpm": {
-  "overrides": {
-    "@opentelemetry/api": "^1.9.1"
-  }
-}
+```typescript
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
+import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-proto';
+import { LoggerProvider, BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
+import { createAddHookMessageChannel } from 'import-in-the-middle';
+import { register } from 'node:module';
+
+const { registerOptions } = createAddHookMessageChannel();
+register('import-in-the-middle/hook.mjs', import.meta.url, registerOptions);
+
+const logExporter = new OTLPLogExporter({
+  url: (process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://localhost:4318') + '/v1/logs',
+});
+
+const loggerProvider = new LoggerProvider();
+loggerProvider.addLogRecordProcessor(new BatchLogRecordProcessor(logExporter));
+
+const sdk = new NodeSDK({
+  serviceName: process.env.OTEL_SERVICE_NAME ?? 'sveltekit-starter',
+  traceExporter: new OTLPTraceExporter({
+    url: (process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://localhost:4318') + '/v1/traces',
+  }),
+  logRecordProcessor: new BatchLogRecordProcessor(logExporter),
+  instrumentations: [
+    getNodeAutoInstrumentations({ /* existing overrides unchanged */ }),
+  ],
+});
+
+sdk.start();
 ```
+
+**Step 3 — Bridge Pino to OTEL via `pino-opentelemetry-transport` in `logger.ts`:**
+
+```typescript
+import pino from 'pino';
+import { env } from '$lib/server/env';
+
+export const logger = pino({
+  level: env.LOG_LEVEL,
+  mixin() {
+    // Keep mixin for stdout correlation — still useful for local dev log tailing
+    const span = trace.getSpan(context.active());
+    if (!span) return {};
+    const ctx = span.spanContext();
+    return { trace_id: ctx.traceId, span_id: ctx.spanId, trace_flags: ctx.traceFlags };
+  },
+  formatters: {
+    level(label: string) { return { level: label }; },
+  },
+  transport: {
+    targets: [
+      // Human-readable stdout for local development
+      { target: 'pino/file', options: { destination: 1 }, level: env.LOG_LEVEL },
+      // OTEL log export to collector
+      {
+        target: 'pino-opentelemetry-transport',
+        options: { loggerName: env.OTEL_SERVICE_NAME },
+        level: env.LOG_LEVEL,
+      },
+    ],
+  },
+});
+```
+
+Note: `pino-opentelemetry-transport` uses the global OTEL `LoggerProvider` registered by the SDK, so `instrumentation.server.ts` must finish calling `sdk.start()` before the first log is emitted. SvelteKit's `instrumentation.server.ts` runs before `hooks.server.ts`, so the ordering is correct.
 
 ---
 
 ## Info
 
-### IN-01: `logger.ts` reads `LOG_LEVEL` directly from `process.env`, bypassing Zod validation
+### IN-01: Misleading comment on pino instrumentation disable
 
-**File:** `src/lib/server/logger.ts:6`
+**File:** `src/instrumentation.server.ts:57`
 
-**Issue:** `process.env.LOG_LEVEL ?? 'info'` is used instead of importing `env.LOG_LEVEL` from `$lib/server/env`. The Zod schema in `env/schema.ts` defines an enum for `LOG_LEVEL` (`trace | debug | info | warn | error | fatal`) and applies a default, but that validation only runs when `$lib/server/env` is imported. An invalid value such as `LOG_LEVEL=verbose` silently passes through to Pino without a startup error.
+**Issue:** The comment `// using manual mixin instead (D-11)` implies the mixin satisfies the D-11 requirement for OTEL log export. It does not — the mixin only enriches stdout JSON. The comment creates false confidence that log export is handled.
 
-**Fix:**
+**Fix:** Update the comment to reflect current reality and the intended follow-up:
 
 ```typescript
-import { env } from '$lib/server/env';
-
-export const logger = pino({
-  level: env.LOG_LEVEL,
-  // ...
-});
-```
-
-Import order is safe: `hooks.server.ts` already imports `$lib/server/env` before `$lib/server/logger`, so the validated `env` object will be available.
-
----
-
-### IN-02: Stale comment in `.env.example` references Phase 4
-
-**File:** `.env.example:14`
-
-**Issue:** The comment reads `# Full connection URL consumed by the app (and later by Drizzle in Phase 4)`. Phase 4 (database integration) is complete and Drizzle is in active use. The comment is misleading for developers cloning the template.
-
-**Fix:**
-
-```
-# Full connection URL consumed by the app and Drizzle ORM
-DATABASE_URL=postgres://postgres:postgres@localhost:5432/app
+'@opentelemetry/instrumentation-pino': { enabled: false },
+// Pino auto-instrumentation disabled; log export is handled via
+// pino-opentelemetry-transport in logger.ts (see CR-01 for full setup).
 ```
 
 ---
 
-### IN-03: `svelte.config.js` enables both deprecated `tracing` flag and current `instrumentation` flag
+### IN-02: `@nosecone/sveltekit` security middleware absent from `package.json`
 
-**File:** `svelte.config.js:9-15`
+**File:** `package.json`
 
-**Issue:** Both `experimental.tracing.server: true` and `experimental.instrumentation.server: true` are set. Per the SvelteKit v2 docs, `instrumentation` is the current entry point for `instrumentation.server.ts`. The `tracing` key predates it and is redundant. Enabling both is harmless today but risks a deprecation warning at startup in a future SvelteKit minor.
+**Issue:** `CLAUDE.md` lists `@nosecone/sveltekit` as a required security dependency. It is not installed. `hooks.server.ts` line 25 contains a forward-reference comment: `// Phase 6 can add handles before/after without refactoring`, suggesting this is an intentional deferral. This is noted for tracking purposes.
 
-**Fix:** Remove the `tracing` block:
-
-```js
-experimental: {
-  instrumentation: {
-    server: true,
-  },
-},
-```
+**Fix:** No immediate action required if Phase 6 is the designated delivery vehicle. Ensure Phase 6 scope explicitly includes installing and wiring `@nosecone/sveltekit` via `sequence(noseconeHandle, otelHandle)`.
 
 ---
 
-### IN-04: `knip.config.ts` permanently suppresses dead-code detection for `src/lib/server/db/index.ts`
-
-**File:** `knip.config.ts:19`
-
-**Issue:** `src/lib/server/db/index.ts` is added to Knip's `ignore` list with the comment "no app code imports it yet." This silences Knip permanently, so a future accidental deletion or export removal on this file will not produce any warning. For a template repository where the DB client is a critical foundational export, ongoing detection is desirable once the first consumer is added.
-
-**Fix:** Low priority for a template. Add a TODO comment so it is removed when the first app-level consumer imports the module:
-
-```ts
-// TODO: remove when first app route imports db — Knip will then detect it naturally
-'src/lib/server/db/index.ts',
-```
-
----
-
-_Reviewed: 2026-04-10T12:00:00Z_
+_Reviewed: 2026-04-11T00:00:00Z_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_
