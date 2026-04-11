@@ -48,12 +48,12 @@ A production-quality SvelteKit full-stack starter template designed to be cloned
 
 ### Database
 
-| Technology             | Version  | Purpose             | Why                                                                                                          |
-| ---------------------- | -------- | ------------------- | ------------------------------------------------------------------------------------------------------------ |
-| PostgreSQL             | 17       | Primary database    | Industry standard RDBMS; runs in Docker for dev                                                              |
-| postgres (postgres.js) | ^3.4.8   | PostgreSQL driver   | Fastest Node.js PG driver; pure JS (no native deps); tagged template SQL prevents injection; ESM native      |
-| drizzle-orm            | ^0.45.2  | ORM / query builder | Type-safe SQL with zero runtime overhead; schema-as-code; supports postgres.js natively                      |
-| drizzle-kit            | ^0.31.10 | Migration tooling   | Generates SQL migrations from schema diffs; `drizzle-kit push` for dev, `drizzle-kit migrate` for production |
+| Technology         | Version  | Purpose             | Why                                                                                                               |
+| ------------------ | -------- | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| PostgreSQL         | 17       | Primary database    | Industry standard RDBMS; runs in Docker for dev                                                                   |
+| pg (node-postgres) | ^8.20.0  | PostgreSQL driver   | OpenTelemetry auto-instrumentation support; used with drizzle-orm/node-postgres; Pool-based connection management |
+| drizzle-orm        | ^0.45.2  | ORM / query builder | Type-safe SQL with zero runtime overhead; schema-as-code; supports node-postgres natively                         |
+| drizzle-kit        | ^0.31.10 | Migration tooling   | Generates SQL migrations from schema diffs; `drizzle-kit push` for dev, `drizzle-kit migrate` for production      |
 
 ### Observability
 
@@ -115,7 +115,7 @@ A production-quality SvelteKit full-stack starter template designed to be cloned
 
 | Category         | Recommended         | Alternative            | Why Not                                                                                                                              |
 | ---------------- | ------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| PG driver        | postgres.js         | node-postgres (pg)     | pg requires CommonJS workarounds in ESM; slower in benchmarks; native binding complexity in Docker                                   |
+| PG driver        | pg (node-postgres)  | postgres.js            | postgres.js lacks OpenTelemetry auto-instrumentation support; pg is used with drizzle-orm/node-postgres                              |
 | ORM              | Drizzle             | Prisma                 | Prisma has a heavy binary engine, slower cold starts, and generates a client that obscures SQL. Drizzle is SQL-first and lightweight |
 | Component lib    | DaisyUI             | shadcn-svelte          | Project constraint: DaisyUI chosen for class-based simplicity over copied component files                                            |
 | Security headers | @nosecone/sveltekit | Manual hooks.server.ts | Manual implementation is error-prone and hard to audit; Nosecone provides typed defaults                                             |

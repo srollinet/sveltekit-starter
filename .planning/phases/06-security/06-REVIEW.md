@@ -9,11 +9,14 @@ files_reviewed_list:
   - src/hooks.server.ts
   - svelte.config.js
 findings:
-  critical: 1
+  critical: 0
   warning: 2
   info: 1
-  total: 4
+  total: 3
 status: issues_found
+dismissed:
+  - id: CR-01
+    reason: 'pg (node-postgres) chosen intentionally over postgres.js — postgres.js lacks OpenTelemetry support and the CommonJS concern is not problematic in practice. CLAUDE.md updated to reflect this decision.'
 ---
 
 # Phase 06: Code Review Report
