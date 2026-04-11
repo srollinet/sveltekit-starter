@@ -136,7 +136,12 @@ Plans:
 2. CSRF origin checking is active -- a POST request from a different origin is rejected by SvelteKit
 3. Importing any module from `$lib/server/` in client-side code causes a build error
 4. `hooks.server.ts` uses `sequence()` composing separate handle functions for security, OTEL enrichment, and locals population
-   **Plans**: TBD
+
+**Plans**: 1 plan
+
+Plans:
+
+- [ ] 06-01-PLAN.md -- Install @nosecone/sveltekit, configure nonce-based CSP, refactor hooks.server.ts to 3-handle sequence, document $lib/server/ boundary
 
 ### Phase 7: Testing
 
@@ -175,6 +180,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 3. Code Quality                  | 1/1            | Complete    | 2026-04-06 |
 | 4. Database                      | 2/2            | Complete    | 2026-04-07 |
 | 5. Observability                 | 0/2            | Planned     | -          |
-| 6. Security                      | 0/0            | Not started | -          |
+| 6. Security                      | 0/1            | Planned     | -          |
 | 7. Testing                       | 0/0            | Not started | -          |
 | 8. Production Docker             | 0/0            | Not started | -          |
