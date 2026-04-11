@@ -537,17 +537,19 @@ describe('GET /api/health', () => {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **logger import in health handler**
    - What we know: `+server.ts` imports `logger` from `$lib/server/logger` in addition to `client` from `$lib/server/db`
    - What's unclear: Does `$lib/server/logger` also trigger the env validation chain or create side effects on import?
    - Recommendation: Check `src/lib/server/logger.ts` before implementing the integration test. If it also imports from `$lib/server/env`, the vi.mock for `$lib/server/db` alone may not be sufficient — may also need `vi.mock('$lib/server/logger')`.
+   - RESOLVED: `logger.ts` imports `$lib/server/env` which triggers Zod validation on import. Plan 02 Task 1 includes `vi.mock('$lib/server/logger', () => ({ logger: { info: vi.fn(), error: vi.fn(), warn: vi.fn(), debug: vi.fn() } }))` in addition to the db mock.
 
 2. **testcontainer test timeout configuration**
    - What we know: `beforeAll` timeout can be set per-suite; test body has separate timeout
    - What's unclear: Whether the vitest `test.testTimeout` in the unit project config should be increased globally or only per-suite
    - Recommendation: Use per-suite timeout on `beforeAll` (60s); keep global timeout at default to avoid masking slow tests elsewhere.
+   - RESOLVED: Per-suite timeout used via second argument to `beforeAll` callback (`}, 60_000)`). Global `testTimeout` left at default (5s) to avoid masking slow tests elsewhere.
 
 ---
 
