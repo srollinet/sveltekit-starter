@@ -2,9 +2,10 @@
 // Server-only — never import this in client-side code
 import pino from 'pino';
 import { trace, context } from '@opentelemetry/api';
+import { env } from '$lib/server/env';
 
 export const logger = pino({
-  level: process.env.LOG_LEVEL ?? 'info',
+  level: env.LOG_LEVEL,
   mixin() {
     const span = trace.getSpan(context.active());
     if (!span) return {};
