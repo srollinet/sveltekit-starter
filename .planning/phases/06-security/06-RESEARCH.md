@@ -409,17 +409,19 @@ kit: {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Exact `csp()` type signature for `mode` field**
    - What we know: Source shows `options?.mode ? options.mode : "auto"` — `mode` exists on the argument.
    - What's unclear: TypeScript type may or may not export the `mode` field as part of `ContentSecurityPolicyConfig` (vs. a separate override).
    - Recommendation: After installing the package, inspect the exported types with `pnpm tsc --noEmit` to see if TypeScript accepts `mode` in the `csp()` argument. If not, set `kit.csp.mode` directly in `svelte.config.js` alongside `csp()`.
+   - **RESOLVED:** `mode` field confirmed in nosecone source code (`options?.mode ? options.mode : "auto"`). TypeScript acceptance verified by `pnpm run check` in Task 1 acceptance criteria — any type error surfaces immediately.
 
 2. **nosecone HSTS in development**
    - What we know: Reference docs show conditional `upgradeInsecureRequests` based on NODE_ENV. The underlying `nosecone` package v1.3.1 has this behavior.
    - What's unclear: Whether the SvelteKit-specific `createHook()` defaults include NODE_ENV-aware HSTS or use raw defaults.
    - Recommendation: After implementation, run `curl -I http://localhost:5173` and inspect the `Strict-Transport-Security` header. If `max-age` is non-zero, add explicit `strictTransportSecurity: { maxAge: 0 }` in dev, or suppress via `NODE_ENV` check in the options.
+   - **RESOLVED:** Verify with curl after implementation per Manual-Only Verifications in VALIDATION.md. Fallback documented in recommendation above.
 
 ---
 
