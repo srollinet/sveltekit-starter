@@ -18,8 +18,8 @@ export const GET: RequestHandler = async () => {
   const timestamp = new Date().toISOString();
 
   try {
-    // Raw postgres.js tagged template — no Drizzle ORM (per D-18)
-    await client`SELECT 1`;
+    // Raw pg query — no Drizzle ORM (per D-18)
+    await client.query('SELECT 1');
 
     return json({ status: 'ok', db: 'ok', timestamp }, { status: 200 });
   } catch (err: unknown) {

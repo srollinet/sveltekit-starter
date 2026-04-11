@@ -8,3 +8,4 @@ trustPolicyIgnoreAfter: 14400 # 10 days
 blockExoticSubdeps: true
 onlyBuiltDependencies:
   - esbuild
+  - protobufjs
