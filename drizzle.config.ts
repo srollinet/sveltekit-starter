@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
@@ -5,10 +7,6 @@ export default defineConfig({
   schema: './src/lib/server/db/schema/*',
   dialect: 'postgresql',
   dbCredentials: {
-    url:
-      process.env.DATABASE_URL ??
-      (() => {
-        throw new Error('DATABASE_URL is not set');
-      })(),
+    url: process.env.DATABASE_URL ?? 'SET-ME-IN-ENV',
   },
 });
