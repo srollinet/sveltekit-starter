@@ -172,7 +172,13 @@ Plans:
 1. `docker build -f docker/Dockerfile .` produces a working production image under 200MB that runs as a non-root user
 2. `docker-compose.yml` references `.env` for all secrets -- no hardcoded passwords in the compose file
 3. `CLAUDE.md` is updated with finalized commands, folder structure, and any conventions that evolved during development
-   **Plans**: TBD
+
+**Plans**: 2 plans
+
+Plans:
+
+- [ ] 08-01-PLAN.md -- Multi-stage Dockerfile + .dockerignore + production docker-compose + Docker build verification
+- [ ] 08-02-PLAN.md -- Full audit update of CLAUDE.md (conventions, architecture, commands, env vars)
 
 ## Progress
 
@@ -188,4 +194,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 5. Observability                 | 2/2            | Complete    | 2026-04-10 |
 | 6. Security                      | 1/1            | Complete    | 2026-04-11 |
 | 7. Testing                       | 0/2            | Not started | -          |
-| 8. Production Docker             | 0/0            | Not started | -          |
+| 8. Production Docker             | 0/2            | Not started | -          |
