@@ -417,22 +417,22 @@ RUN apk add --no-cache curl
 | A3  | `node:22-alpine` already contains the `node` user at uid 1000                          | Architecture Patterns | `USER node` would fail; would need `addgroup` + `adduser`                 |
 | A4  | Image size will be ~130-150MB with alpine and production deps only                     | Summary               | May exceed 200MB limit; execution must verify with `docker image inspect` |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **pnpm prune vs clean prod install**
    - What we know: `pnpm prune --prod` removes devDependencies from existing node_modules
    - What's unclear: Whether pnpm-workspace.yaml settings cause issues with in-place prune
-   - Recommendation: Use `pnpm prune --prod` in the Dockerfile; if it fails, fall back to copying node_modules from a fresh `pnpm install --prod` in a separate stage
+   - RESOLVED: Use `pnpm prune --prod` in the Dockerfile; Plan 08-01 Task 3 includes an explicit fallback — if prune fails, fall back to a fresh `pnpm install --prod` in a separate stage
 
 2. **ORIGIN env var requirement**
    - What we know: SvelteKit uses `ORIGIN` for CSRF validation when not behind a trusted reverse proxy
    - What's unclear: Whether the starter should include `ORIGIN` in `.env.example` documentation
-   - Recommendation: Add `ORIGIN=http://localhost:3000` to `.env.example` with a comment explaining production override
+   - RESOLVED: Plan 08-01 Task 2 adds `ORIGIN=http://localhost:3000` to `.env.example` with a comment explaining the production override requirement
 
 3. **Database migrations in production**
    - What we know: `drizzle-kit migrate` runs migrations; the Dockerfile does NOT run migrations at startup (not in scope for this phase)
    - What's unclear: How users should run migrations in production
-   - Recommendation: Document `docker run --rm --env-file .env image_name node -e "import('./node_modules/.bin/drizzle-kit').then(m => m.migrate())"` pattern OR just note that `drizzle-kit migrate` must be run before first deployment; this is a documentation task in CLAUDE.md
+   - RESOLVED: Out of scope for this phase. Plan 08-02 Task 1 documents the migration runbook in CLAUDE.md — `npx drizzle-kit migrate` must be run before first deployment using `docker run --rm --env-file .env <image> npx drizzle-kit migrate`
 
 ## Environment Availability
 
