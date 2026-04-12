@@ -107,9 +107,34 @@ A production-quality SvelteKit full-stack starter template designed to be cloned
 
 ## Environment Variables (.env)
 
-# Database
+### Database
 
-# OpenTelemetry
+| Variable            | Required | Default                                           | Description                                                                                           |
+| ------------------- | -------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `POSTGRES_USER`     | Yes      | `postgres`                                        | PostgreSQL username                                                                                   |
+| `POSTGRES_PASSWORD` | Yes      | `postgres`                                        | PostgreSQL password                                                                                   |
+| `POSTGRES_DB`       | Yes      | `app`                                             | PostgreSQL database name                                                                              |
+| `DATABASE_URL`      | Yes      | `postgres://postgres:postgres@localhost:5432/app` | Full connection URL (use service name `postgres` instead of `localhost` in Docker Compose production) |
+
+### OpenTelemetry
+
+| Variable                      | Required | Default                 | Description                   |
+| ----------------------------- | -------- | ----------------------- | ----------------------------- |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | Yes      | `http://localhost:4318` | OTLP HTTP endpoint for traces |
+| `OTEL_SERVICE_NAME`           | Yes      | `sveltekit-starter`     | Service name in traces        |
+
+### Logging
+
+| Variable    | Required | Default | Description                                        |
+| ----------- | -------- | ------- | -------------------------------------------------- |
+| `LOG_LEVEL` | No       | `info`  | Pino log level (trace/debug/info/warn/error/fatal) |
+
+### Production
+
+| Variable | Required  | Default | Description                                                          |
+| -------- | --------- | ------- | -------------------------------------------------------------------- |
+| `ORIGIN` | Prod only | —       | Full origin URL for CSRF validation (e.g., `https://yourdomain.com`) |
+| `PORT`   | No        | `3000`  | HTTP port for adapter-node                                           |
 
 ## Alternatives Considered
 
@@ -178,7 +203,56 @@ A production-quality SvelteKit full-stack starter template designed to be cloned
 
 ## Conventions
 
-Conventions not yet established. Will populate as patterns emerge during development.
+### Svelte 5 Runes (NOT Stores)
+
+- Use `$state`, `$derived`, `$effect`, `$props` for all reactivity
+- Use `{@render children()}` for slot content — NOT `<slot />`
+- Do NOT use `writable()`, `readable()`, or `derived()` stores from `svelte/store`
+
+### Server-Only Boundary
+
+- All server-only code lives in `$lib/server/` — importing from this path in client code causes a build error
+- Database client, env validation, logger, and all secrets are in `$lib/server/`
+- Use `$env/dynamic/private` for secrets (NOT `$env/static/private`) to support Docker runtime env vars
+
+### Environment Validation
+
+- Zod schema in `src/lib/server/env/schema.ts` validates all required env vars at startup
+- App fails fast with a clear Zod error if a required variable is missing
+- Import validated env as `import { env } from '$lib/server/env'`
+
+### Database
+
+- Drizzle ORM with `pg` (node-postgres) driver — NOT `postgres.js`
+- DB client singleton in `src/lib/server/db/index.ts` (module-level Pool, not per-request)
+- Schema files in `src/lib/server/db/schema/`
+- Migrations committed to `drizzle/` directory (auto-generated names, do not rename)
+- Dev workflow: `db:push` to validate schema, then `db:generate` to produce migration SQL
+
+### Logging
+
+- Structured logging via `@opentelemetry/api-logs` with a pino-compatible API (`src/lib/server/logger.ts`)
+- Use `logger.info(...)`, `logger.error(...)` — NOT `console.log`
+- Supports both `logger.info('message')` and `logger.info({ key: 'value' }, 'message')` overloads
+- Log level controlled by `LOG_LEVEL` env var; mirrors to stdout as JSON for local log tailing
+
+### Hooks Pipeline
+
+- `src/hooks.server.ts` uses `sequence()` to compose handle functions
+- Order: nosecone security headers first, then OTEL enrichment, then logging/locals
+- Each handle function is a named export for testability
+
+### CSS-First Styling
+
+- All Tailwind + DaisyUI config in `src/app.css` via `@import` and `@plugin` — no `tailwind.config.js`
+- DaisyUI themes set via `data-theme` attribute on `<html>` element
+
+### Code Quality
+
+- ESLint flat config (`eslint.config.js`) — no `.eslintrc` files
+- Prettier plugin order: `prettier-plugin-svelte` THEN `prettier-plugin-tailwindcss` (tailwind last)
+- Pre-commit hook via Husky + lint-staged runs ESLint + Prettier on staged files
+- Knip for dead code detection with SvelteKit-aware config
 
 <!-- GSD:conventions-end -->
 
@@ -186,7 +260,69 @@ Conventions not yet established. Will populate as patterns emerge during develop
 
 ## Architecture
 
-Architecture not yet mapped. Follow existing patterns found in the codebase.
+### Folder Structure
+
+```
+src/
+  app.css                        # Tailwind v4 + DaisyUI v5 CSS-first config
+  app.html                       # HTML shell with data-theme
+  hooks.server.ts                # Request pipeline: security -> OTEL -> logging
+  instrumentation.server.ts      # OTEL SDK init (runs before any app code)
+  lib/
+    server/
+      db/
+        index.ts                 # Drizzle client + pg Pool singleton
+        schema/                  # Drizzle schema files (posts.ts, etc.)
+      env/
+        index.ts                 # Validated env export
+        schema.ts                # Zod env validation schema
+      logger.ts                  # Structured OTEL logger (pino-compatible API)
+  routes/
+    +layout.svelte               # Root layout (navbar + drawer + theme toggle)
+    +page.svelte                 # Home page
+    +error.svelte                # Error page
+    api/
+      health/
+        +server.ts               # GET /api/health (DB connectivity check)
+docker/
+  Dockerfile                     # Multi-stage production build (3 stages)
+  docker-compose.prod.yml        # Production: app + postgres
+docker-compose.yml               # Dev only: postgres + Aspire Dashboard
+drizzle/                         # Committed migration SQL files
+  meta/                          # Migration journal + snapshots
+```
+
+### Key Commands
+
+| Command | Purpose |
+|---------|---------|
+| `pnpm run dev` | Start SvelteKit dev server (hot reload) |
+| `pnpm run build` | Build for production (adapter-node output in `build/`) |
+| `pnpm run preview` | Preview production build locally |
+| `pnpm run check` | Run svelte-check TypeScript validation |
+| `pnpm run lint` | Run ESLint |
+| `pnpm run format` | Run Prettier |
+| `pnpm run knip` | Run dead code detection |
+| `pnpm run test:unit` | Run Vitest unit + component + integration tests |
+| `pnpm run test:e2e` | Run Playwright E2E tests |
+| `pnpm run test` | Run all tests (unit + E2E) |
+| `pnpm run db:push` | Push schema to dev DB (validates schema) |
+| `pnpm run db:generate` | Generate migration SQL from schema diff |
+| `pnpm run db:migrate` | Apply migrations to database |
+| `pnpm run db:studio` | Open Drizzle Studio UI |
+| `docker compose up` | Start dev dependencies (PostgreSQL + Aspire Dashboard) |
+| `docker build -f docker/Dockerfile .` | Build production Docker image |
+| `docker compose -f docker/docker-compose.prod.yml up` | Run production stack (app + PostgreSQL) |
+
+### Request Flow
+
+1. Request enters SvelteKit
+2. `hooks.server.ts` `sequence()` pipeline runs:
+   - Nosecone adds security headers (CSP with nonce, HSTS, X-Frame-Options, etc.)
+   - OTEL handle enriches the active span with route info
+   - Logging handle populates `event.locals` and logs request
+3. Route handler executes (page or API endpoint)
+4. Response includes security headers on every response
 
 <!-- GSD:architecture-end -->
 
