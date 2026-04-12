@@ -29,3 +29,4 @@ Thumbs.db
 # Test files not needed in production
 *.test.ts
 *.spec.ts
+*.e2e.ts

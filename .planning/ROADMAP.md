@@ -177,8 +177,8 @@ Plans:
 
 Plans:
 
-- [ ] 08-01-PLAN.md -- Multi-stage Dockerfile + .dockerignore + production docker-compose + Docker build verification
-- [ ] 08-02-PLAN.md -- Full audit update of CLAUDE.md (conventions, architecture, commands, env vars)
+- [x] 08-01-PLAN.md -- Multi-stage Dockerfile + .dockerignore + production docker-compose + Docker build verification
+- [x] 08-02-PLAN.md -- Full audit update of CLAUDE.md (conventions, architecture, commands, env vars)
 
 ## Progress
 
