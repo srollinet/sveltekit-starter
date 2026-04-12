@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { Pool } from 'pg';
+import type { RequestHandler } from './$types.js';
 
 // Module-level refs — set in beforeAll, read lazily by mock getters
 let container: StartedPostgreSqlContainer;
@@ -31,7 +32,7 @@ vi.mock('$lib/server/logger', () => ({
 }));
 
 // Dynamic import AFTER vi.mock hoisting — handler gets mocked modules
-let GET: (event: unknown) => Promise<Response>;
+let GET: RequestHandler;
 
 describe('GET /api/health', () => {
   beforeAll(async () => {
