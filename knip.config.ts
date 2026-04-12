@@ -6,8 +6,6 @@ const config: KnipConfig = {
     // Loaded via CSS @import / @plugin — not imported in JS
     'tailwindcss',
     'daisyui',
-    // Installed for plan 07-02 integration tests (testcontainers approach); not yet imported in source
-    '@testcontainers/postgresql',
     // Required by @testcontainers/postgresql, not imported directly
     'testcontainers',
     // Dev workflow tooling — not imported in source
