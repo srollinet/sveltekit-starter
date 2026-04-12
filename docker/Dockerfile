@@ -25,8 +25,13 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy all source files (filtered by .dockerignore)
 COPY . .
 
+# Provide a dummy DATABASE_URL so Zod env validation passes at build time.
+# The actual value is injected at runtime via env_file — this placeholder
+# is only present during the vite build step and does NOT end up in the image.
+ARG DATABASE_URL=postgres://placeholder:placeholder@localhost:5432/placeholder
+
 # Build the SvelteKit app — adapter-node outputs to build/
-RUN pnpm run build
+RUN DATABASE_URL=${DATABASE_URL} pnpm run build
 
 # ── Stage 3: runtime ──────────────────────────────────────────
 FROM node:22-alpine AS runtime
@@ -44,8 +49,9 @@ COPY --from=builder /app/pnpm-workspace.yaml ./
 COPY --from=builder /app/.npmrc ./
 
 # Copy full node_modules, then prune to production-only
+# --ignore-scripts prevents the prepare/husky lifecycle hook from running during prune
 COPY --from=deps /app/node_modules ./node_modules
-RUN pnpm prune --prod
+RUN pnpm prune --prod --ignore-scripts
 
 # Copy built app (adapter-node output)
 COPY --from=builder /app/build ./build
