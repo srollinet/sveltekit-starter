@@ -1,0 +1,39 @@
+# Production compose — run with: docker compose -f docker/docker-compose.prod.yml up
+#
+# Requires a .env file at the project root with all variables from .env.example.
+# IMPORTANT: DATABASE_URL must use the service name "postgres" (not "localhost")
+# because containers communicate over the Docker network.
+# Example: DATABASE_URL=postgres://postgres:postgres@postgres:5432/app
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - '${PORT:-3000}:${PORT:-3000}'
+    env_file: ../.env
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:17-alpine
+    env_file: ../.env
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  postgres_prod_data:
