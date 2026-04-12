@@ -6,9 +6,10 @@ const config: KnipConfig = {
     // Loaded via CSS @import / @plugin — not imported in JS
     'tailwindcss',
     'daisyui',
-    // Component test utilities — no .svelte tests yet; will be used when added
-    '@testing-library/svelte',
-    '@testing-library/jest-dom',
+    // Installed for plan 07-02 integration tests (testcontainers approach); not yet imported in source
+    '@testcontainers/postgresql',
+    // Required by @testcontainers/postgresql, not imported directly
+    'testcontainers',
     // Dev workflow tooling — not imported in source
     'get-shit-done-cc',
   ],
