@@ -159,8 +159,8 @@ Plans:
 
 Plans:
 
-- [ ] 07-01-PLAN.md -- Vitest workspaces (node + jsdom), StackBadge component + component test, knip cleanup
-- [ ] 07-02-PLAN.md -- Health endpoint integration test (testcontainers) + Playwright E2E smoke test
+- [x] 07-01-PLAN.md -- Vitest workspaces (node + jsdom), StackBadge component + component test, knip cleanup
+- [x] 07-02-PLAN.md -- Health endpoint integration test (testcontainers) + Playwright E2E smoke test
 
 ### Phase 8: Production Docker
 
