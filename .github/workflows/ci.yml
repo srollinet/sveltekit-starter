@@ -47,6 +47,11 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          # The env schema is validated at module evaluation time, which happens during SSR chunk
+          # rendering in the build. A syntactically valid (but fake) URL satisfies the schema so
+          # the build completes without requiring a real database.
+          DATABASE_URL: postgres://ci:ci@localhost:5432/ci
 
       - name: Unit tests
         run: pnpm test:unit
