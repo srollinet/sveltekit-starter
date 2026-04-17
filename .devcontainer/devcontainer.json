@@ -1,0 +1,22 @@
+{
+  "name": "sveltekit-starter",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": { "moby": false },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "24",
+      "pnpmVersion": "latest"
+    }
+  },
+  "remoteEnv": {
+    "PNPM_HOME": "/home/node/.local/share/pnpm",
+    "PATH": "${containerEnv:PATH}:/home/node/.local/share/pnpm"
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "remoteUser": "node",
+  "customizations": {
+    "vscode": {
+      "extensions": ["esbenp.prettier-vscode", "dbaeumer.vscode-eslint", "svelte.svelte-vscode"]
+    }
+  }
+}
