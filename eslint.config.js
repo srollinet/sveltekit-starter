@@ -48,6 +48,21 @@ export default defineConfig(
         svelteConfig,
       },
     },
+    rules: {
+      '@typescript-eslint/no-deprecated': 'error',
+    },
+  },
+  // Type-aware rules for src/ TS files (requires project type information)
+  {
+    files: ['src/**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-deprecated': 'error',
+    },
   },
   // CSS: @eslint/css language plugin with Tailwind v4 compatibility
   {
