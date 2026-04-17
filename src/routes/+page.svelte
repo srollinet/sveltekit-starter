@@ -45,16 +45,16 @@
     {
       title: 'PostgreSQL + Drizzle',
       description: 'Type-safe SQL database access with schema-as-code migrations.',
-      badge: 'Phase 4',
-      badgeClass: 'badge-ghost',
-      ready: false,
+      badge: 'Database',
+      badgeClass: 'badge-info',
+      ready: true,
     },
     {
       title: 'OpenTelemetry',
       description: 'Distributed tracing and metrics via Aspire Dashboard.',
-      badge: 'Phase 5',
-      badgeClass: 'badge-ghost',
-      ready: false,
+      badge: 'Observability',
+      badgeClass: 'badge-info',
+      ready: true,
     },
   ] as const;
 </script>

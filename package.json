@@ -16,7 +16,6 @@
     "test:unit:watch": "vitest",
     "test": "pnpm run test:unit && pnpm run test:e2e",
     "knip": "knip",
-    "db:start": "docker compose up",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
