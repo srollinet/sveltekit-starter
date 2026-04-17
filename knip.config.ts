@@ -1,7 +1,7 @@
 import type { KnipConfig } from 'knip';
 
 const config: KnipConfig = {
-  project: ['src/**/*.{ts,svelte}', '*.{js,ts}'],
+  project: ['src/**/*.ts', '*.{js,ts}'],
   ignoreDependencies: [
     // Loaded via CSS @import / @plugin — not imported in JS
     'tailwindcss',
