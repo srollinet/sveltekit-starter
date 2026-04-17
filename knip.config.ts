@@ -8,8 +8,6 @@ const config: KnipConfig = {
     'daisyui',
     // Required by @testcontainers/postgresql, not imported directly
     'testcontainers',
-    // Dev workflow tooling — not imported in source
-    'get-shit-done-cc',
   ],
   ignore: [
     // Starter $lib barrel — intentionally exported for template users

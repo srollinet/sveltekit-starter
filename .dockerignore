@@ -8,7 +8,6 @@ build
 
 # Dev tooling
 .planning
-.claude
 test-results
 playwright-report
 tests/
