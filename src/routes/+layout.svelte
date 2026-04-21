@@ -65,6 +65,7 @@
       <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
           <li><a href={resolve('/')}>Home</a></li>
+          <li><a href={resolve('/demo/posts')}>Posts</a></li>
         </ul>
       </div>
 
@@ -123,6 +124,7 @@
     <ul class="menu bg-base-200 min-h-full w-64 gap-1 p-4">
       <li class="menu-title">Navigation</li>
       <li><a href={resolve('/')}>Home</a></li>
+      <li><a href={resolve('/demo/posts')}>Posts</a></li>
     </ul>
   </div>
 </div>

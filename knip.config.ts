@@ -12,8 +12,8 @@ const config: KnipConfig = {
   ignore: [
     // Starter $lib barrel — intentionally exported for template users
     'src/lib/index.ts',
-    // TODO: remove when first app route imports db — Knip will then detect it naturally
-    'src/lib/server/db/index.ts',
+    // Schema files export types for consumers (forms, API clients, etc.)
+    'src/**/schema.ts',
   ],
   ignoreExportsUsedInFile: true,
 };
