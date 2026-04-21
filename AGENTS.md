@@ -1,23 +1,45 @@
-You are able to use the Svelte MCP server, where you have access to comprehensive Svelte 5 and SvelteKit documentation. Here's how to use the available tools effectively:
+A full-stack SvelteKit starter with PostgreSQL, Drizzle ORM, Tailwind CSS, and OpenTelemetry observability. Deployable as a Node.js Docker container.
 
-## Available Svelte MCP Tools:
+## Setup
 
-### 1. list-sections
+This project uses **pnpm** (not npm or yarn).
 
-Use this FIRST to discover all available documentation sections. Returns a structured list with titles, use_cases, and paths.
-When asked about Svelte or SvelteKit topics, ALWAYS use this tool at the start of the chat to find relevant sections.
+```bash
+docker compose up -d   # start Postgres + Aspire dashboard
+pnpm install
+pnpm db:migrate
+pnpm dev
+```
 
-### 2. get-documentation
+## Key commands
 
-Retrieves full documentation content for specific sections. Accepts single or multiple sections.
-After calling the list-sections tool, you MUST analyze the returned documentation sections (especially the use_cases field) and then use the get-documentation tool to fetch ALL documentation sections that are relevant for the user's task.
+| Command            | Description                                 |
+| ------------------ | ------------------------------------------- |
+| `pnpm check`       | Type-check (svelte-check + svelte-kit sync) |
+| `pnpm lint`        | Lint with ESLint                            |
+| `pnpm test`        | Run all tests                               |
+| `pnpm db:generate` | Generate migration from schema changes      |
+| `pnpm db:migrate`  | Apply pending migrations                    |
 
-### 3. svelte-autofixer
+## Project structure
 
-Analyzes Svelte code and returns issues and suggestions.
-You MUST use this tool whenever writing Svelte code before sending it to the user. Keep calling it until no issues or suggestions are returned.
+```
+src/
+  routes/          # SvelteKit pages and API routes (+page.svelte, +page.server.ts, +server.ts)
+  lib/
+    components/    # Shared Svelte components
+    server/        # Server-only code (never imported by client)
+      db/
+        index.ts            # Drizzle client
+        schema/             # One file per table; re-export all from schema/index.ts
+      env/         # Validated server environment variables
+    index.ts       # Public lib exports (client-safe)
+drizzle/           # Generated migration SQL files — always commit these
+```
 
-### 4. playground-link
+## Documentation
 
-Generates a Svelte Playground link with the provided code.
-After completing the code, ask the user if they want a playground link. Only call this tool after user confirmation and NEVER if code was written to files in their project.
+- [docs/CONVENTIONS.md](docs/CONVENTIONS.md) — Coding conventions (TypeScript, Zod, DTOs, DaisyUI)
+- [docs/SVELTE.md](docs/SVELTE.md) — Svelte 5 patterns and MCP server usage
+- [docs/DATABASE.md](docs/DATABASE.md) — Drizzle ORM schema conventions and query patterns
+- [docs/TESTING.md](docs/TESTING.md) — Testing patterns and commands
