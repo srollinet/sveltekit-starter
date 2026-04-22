@@ -63,7 +63,19 @@ export const actions: Actions = {
       });
     }
 
-    await db.update(posts).set({ status: result.data.status }).where(eq(posts.id, result.data.id));
+    const updated = await db
+      .update(posts)
+      .set({ status: result.data.status })
+      .where(eq(posts.id, result.data.id))
+      .returning({ id: posts.id });
+
+    if (updated.length === 0) {
+      return fail(404, {
+        action: 'updateStatus' as const,
+        success: false as const,
+        errors: { id: ['Post not found'] } as Record<string, string[]>,
+      });
+    }
 
     return { action: 'updateStatus' as const, success: true as const };
   },

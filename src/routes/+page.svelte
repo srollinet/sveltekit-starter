@@ -1,4 +1,6 @@
 <script lang="ts">
+  import StackBadge from '$lib/components/StackBadge.svelte';
+
   const stackItems = [
     {
       title: 'SvelteKit 2',
@@ -69,10 +71,11 @@
     {#each stackItems as item (item.title)}
       <div class="card bg-base-100 border-base-200 border shadow-md">
         <div class="card-body">
-          <div class="flex items-start justify-between gap-2">
-            <h2 class="card-title text-base">{item.title}</h2>
-            <span class="badge {item.badgeClass} badge-sm shrink-0">{item.badge}</span>
-          </div>
+          <StackBadge
+            name={item.title}
+            badge={item.badge}
+            badgeClass={item.badgeClass}
+          />
           <p class="text-base-content/70 text-sm">{item.description}</p>
           {#if !item.ready}
             <div class="card-actions mt-2 justify-end">

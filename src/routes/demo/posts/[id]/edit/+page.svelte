@@ -23,6 +23,8 @@
     }
     return undefined;
   }
+
+  let titleError = $derived(getUpdateError('title'));
 </script>
 
 <div class="container mx-auto max-w-2xl p-6">
@@ -75,11 +77,11 @@
             type="text"
             bind:value={title}
             class="input input-bordered w-full"
-            class:input-error={!!getUpdateError('title')}
+            class:input-error={!!titleError}
             placeholder="Post title"
           />
-          {#if getUpdateError('title')}
-            <p class="text-error mt-1 text-sm">{getUpdateError('title')}</p>
+          {#if titleError}
+            <p class="text-error mt-1 text-sm">{titleError}</p>
           {/if}
         </div>
 

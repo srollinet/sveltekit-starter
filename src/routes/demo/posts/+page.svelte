@@ -27,6 +27,8 @@
     published: 'badge-success',
     archived: 'badge-ghost',
   };
+
+  let titleError = $derived(getCreateError('title'));
 </script>
 
 <div class="container mx-auto space-y-8 p-6">
@@ -85,11 +87,11 @@
             type="text"
             bind:value={title}
             class="input input-bordered w-full"
-            class:input-error={!!getCreateError('title')}
+            class:input-error={!!titleError}
             placeholder="Post title"
           />
-          {#if getCreateError('title')}
-            <p class="text-error mt-1 text-sm">{getCreateError('title')}</p>
+          {#if titleError}
+            <p class="text-error mt-1 text-sm">{titleError}</p>
           {/if}
         </div>
 

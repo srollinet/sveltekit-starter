@@ -63,4 +63,14 @@ describe('GET /api/health', () => {
     const parsed = new Date(body.timestamp);
     expect(parsed.toISOString()).toBe(body.timestamp);
   });
+
+  it('returns 503 with { status: error, db: error } when database is unreachable', async () => {
+    vi.spyOn(testPool, 'query').mockRejectedValueOnce(new Error('Connection refused'));
+    const response = await GET({} as Parameters<typeof GET>[0]);
+    const body = await response.json();
+    expect(response.status).toBe(503);
+    expect(body.status).toBe('error');
+    expect(body.db).toBe('error');
+    expect(typeof body.timestamp).toBe('string');
+  });
 });
