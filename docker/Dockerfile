@@ -53,14 +53,12 @@ USER node
 COPY --chown=node:node --from=builder /app/node_modules ./node_modules
 COPY --chown=node:node --from=builder /app/build ./build
 
-# Set production environment per D-11
 ENV NODE_ENV=production
-# Default port per D-09 (adapter-node default)
 ENV PORT=3000
 
 EXPOSE 3000
 
-# Health check per D-08 — probes the existing /api/health endpoint.
+# Health check probes the existing /api/health endpoint.
 # Uses the Node.js binary already present — curl is not needed and would
 # add an unnecessary network-capable binary to the attack surface.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
