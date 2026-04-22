@@ -68,7 +68,7 @@ const sdk = new NodeSDK({
   ],
 });
 
-// sdk.start() is synchronous (void return) — do NOT await (per D-03)
+// sdk.start() is synchronous (void return) — do NOT await
 sdk.start();
 
 // Graceful shutdown on SIGTERM (e.g. Docker stop)

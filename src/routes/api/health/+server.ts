@@ -18,7 +18,7 @@ export const GET: RequestHandler = async () => {
   const timestamp = new Date().toISOString();
 
   try {
-    // Raw pg query — no Drizzle ORM (per D-18)
+    // Raw pg query — no Drizzle ORM
     await client.query('SELECT 1');
 
     return json({ status: 'ok', db: 'ok', timestamp }, { status: 200 });
