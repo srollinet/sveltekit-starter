@@ -37,9 +37,23 @@ src/
 drizzle/           # Generated migration SQL files — always commit these
 ```
 
+## Mandatory libraries
+
+Always use the following libraries for their respective concerns. Never substitute alternatives.
+
+| Concern    | Library    |
+| ---------- | ---------- |
+| UI         | DaisyUI    |
+| Validation | Zod        |
+| Database   | Drizzle    |
+| Forms      | Superforms |
+
+Always read the relevant documentation file before implementing anything in that domain.
+
 ## Documentation
 
 - [docs/CONVENTIONS.md](docs/CONVENTIONS.md) — Coding conventions (TypeScript, Zod, DTOs, DaisyUI)
 - [docs/SVELTE.md](docs/SVELTE.md) — Svelte 5 patterns and MCP server usage
 - [docs/DATABASE.md](docs/DATABASE.md) — Drizzle ORM schema conventions and query patterns
+- [docs/SUPERFORMS.md](docs/SUPERFORMS.md) — SvelteKit Superforms: server validation, client form state, file uploads, nested data, SPA mode
 - [docs/TESTING.md](docs/TESTING.md) — Testing patterns and commands
