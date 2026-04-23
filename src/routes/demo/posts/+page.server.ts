@@ -4,7 +4,7 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import { desc, eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { posts } from '$lib/server/db/schema';
-import { createPostSchema, updateStatusSchema } from './schema';
+import { createPostSchema, updatePostStatusSchema, deletePostSchema } from './schema';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -18,12 +18,13 @@ export const load: PageServerLoad = async () => {
     .from(posts)
     .orderBy(desc(posts.createdAt));
 
-  const [createForm, updateStatusForm] = await Promise.all([
+  const [createForm, updateStatusForm, deleteForm] = await Promise.all([
     superValidate(zod4(createPostSchema)),
-    superValidate(zod4(updateStatusSchema)),
+    superValidate(zod4(updatePostStatusSchema)),
+    superValidate(zod4(deletePostSchema)),
   ]);
 
-  return { posts: allPosts, createForm, updateStatusForm };
+  return { posts: allPosts, createForm, updateStatusForm, deleteForm };
 };
 
 export const actions: Actions = {
@@ -41,7 +42,7 @@ export const actions: Actions = {
   },
 
   updateStatus: async ({ request }) => {
-    const form = await superValidate(request, zod4(updateStatusSchema));
+    const form = await superValidate(request, zod4(updatePostStatusSchema));
     if (!form.valid) return fail(400, { form });
 
     const updated = await db
@@ -55,5 +56,18 @@ export const actions: Actions = {
     }
 
     return { form };
+  },
+
+  delete: async ({ request }) => {
+    const form = await superValidate(request, zod4(deletePostSchema));
+    if (!form.valid) return fail(400, { form });
+
+    const deleted = await db.delete(posts).where(eq(posts.id, form.data.id)).returning({ id: posts.id });
+
+    if (deleted.length === 0) {
+      return setError(form, 'id', 'Post not found.');
+    }
+
+    return message(form, 'Post deleted!');
   },
 };

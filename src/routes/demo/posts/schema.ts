@@ -17,9 +17,13 @@ export const createPostSchema = z.object({
 
 export const updatePostSchema = z.object(postFields);
 
-export const updateStatusSchema = z.object({
+export const updatePostStatusSchema = z.object({
   id: z.string().min(1, 'Post ID is required'),
   status: postStatusEnum,
+});
+
+export const deletePostSchema = z.object({
+  id: z.string().min(1, 'Post ID is required'),
 });
 
 export type CreatePostInput = z.infer<typeof createPostSchema>;

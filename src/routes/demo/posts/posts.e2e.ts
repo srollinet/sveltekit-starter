@@ -61,4 +61,31 @@ test.describe('Posts Page', () => {
     // The form auto-submits, check if the badge updates to 'archived'
     await expect(row.locator('.badge').filter({ hasText: 'archived' })).toBeVisible();
   });
+  test('can delete a post', async ({ page }) => {
+    const uniqueTitle = `Delete Test Post ${Date.now()}`;
+    await createPost(page, uniqueTitle, 'draft');
+
+    const row = page.getByRole('row', { name: new RegExp(uniqueTitle) });
+    await expect(row).toBeVisible();
+
+    page.once('dialog', (dialog) => dialog.accept());
+
+    await row.getByRole('button', { name: 'Delete' }).click();
+
+    await expect(row).not.toBeVisible();
+  });
+
+  test('canceling the delete dialog does not delete the post', async ({ page }) => {
+    const uniqueTitle = `Cancel Delete Test Post ${Date.now()}`;
+    await createPost(page, uniqueTitle, 'draft');
+
+    const row = page.getByRole('row', { name: new RegExp(uniqueTitle) });
+    await expect(row).toBeVisible();
+
+    page.once('dialog', (dialog) => dialog.dismiss());
+
+    await row.getByRole('button', { name: 'Delete' }).click();
+
+    await expect(row).toBeVisible();
+  });
 });

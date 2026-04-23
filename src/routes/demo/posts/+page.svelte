@@ -23,6 +23,16 @@
   );
 
   const { enhance: updateStatusEnhance } = superForm(untrack(() => data.updateStatusForm));
+  const { enhance: deleteEnhance } = superForm(
+    untrack(() => data.deleteForm),
+    {
+      onSubmit({ cancel }) {
+        if (!confirm('Are you sure you want to delete this post?')) {
+          cancel();
+        }
+      },
+    },
+  );
 
   const statusBadgeClass: Record<string, string> = {
     draft: 'badge-warning',
@@ -193,6 +203,19 @@
                     >
                       Edit
                     </a>
+                    <form
+                      method="POST"
+                      action="?/delete"
+                      use:deleteEnhance
+                      class="ml-2 inline-block"
+                    >
+                      <input
+                        type="hidden"
+                        name="id"
+                        value={post.id}
+                      />
+                      <button class="btn btn-error btn-sm btn-outline">Delete</button>
+                    </form>
                   </td>
                 </tr>
               {/each}
