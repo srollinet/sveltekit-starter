@@ -1,5 +1,9 @@
 A full-stack SvelteKit starter with PostgreSQL, Drizzle ORM, Tailwind CSS, and OpenTelemetry observability. Deployable as a Node.js Docker container.
 
+## Communication Style
+
+Always load the caveman skill (`/.agents/skills/caveman/SKILL.md`) and respond at **ultra** intensity (`/caveman ultra`). Active every response, no exceptions.
+
 ## Setup
 
 This project uses **pnpm** (not npm or yarn).

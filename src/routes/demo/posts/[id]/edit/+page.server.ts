@@ -44,6 +44,6 @@ export const actions: Actions = {
       })
       .where(eq(posts.id, params.id));
 
-    throw redirect(303, '/demo/posts');
+    redirect(303, '/demo/posts');
   },
 };
