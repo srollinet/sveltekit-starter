@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import { resolve } from '$app/paths';
   import { superForm } from 'sveltekit-superforms';
   import { zod4 } from 'sveltekit-superforms/adapters';
@@ -13,12 +14,15 @@
     constraints: createConstraints,
     message: createMessage,
     enhance: createEnhance,
-  } = superForm(data.createForm, {
-    validators: zod4(createPostSchema),
-    resetForm: true,
-  });
+  } = superForm(
+    untrack(() => data.createForm),
+    {
+      validators: zod4(createPostSchema),
+      resetForm: true,
+    },
+  );
 
-  const { enhance: updateStatusEnhance } = superForm(data.updateStatusForm);
+  const { enhance: updateStatusEnhance } = superForm(untrack(() => data.updateStatusForm));
 
   const statusBadgeClass: Record<string, string> = {
     draft: 'badge-warning',

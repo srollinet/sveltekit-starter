@@ -45,11 +45,12 @@ export const actions = {
 
 ```svelte
 <script lang="ts">
+  import { untrack } from 'svelte';
   import { superForm } from 'sveltekit-superforms';
 
   let { data } = $props();
 
-  const { form, errors, constraints, message, enhance } = superForm(data.form);
+  const { form, errors, constraints, message, enhance } = superForm(untrack(() => data.form));
 </script>
 
 {#if $message}<p>{$message}</p>{/if}
@@ -167,26 +168,30 @@ Form-level errors (no path) are in `$errors._errors`. Array errors in `$errors.f
 ## Useful `superForm` options
 
 ```ts
-const { form, errors, enhance } = superForm(data.form, {
-  // Run client-side validation with the same schema
-  validators: zod4(schema),
+// You can use untrack(() => data.form) to suppress compiler warnings
+const { form, errors, enhance } = superForm(
+  untrack(() => data.form),
+  {
+    // Run client-side validation with the same schema
+    validators: zod4(schema),
 
-  // What to clear on submit (default: 'message')
-  clearOnSubmit: 'errors-and-message',
+    // What to clear on submit (default: 'message')
+    clearOnSubmit: 'errors-and-message',
 
-  // Prevent double-submit (default: 'prevent')
-  multipleSubmits: 'prevent', // | 'abort' | 'allow'
+    // Prevent double-submit (default: 'prevent')
+    multipleSubmits: 'prevent', // | 'abort' | 'allow'
 
-  // After successful update
-  onUpdated({ form }) {
-    if (form.valid) toast(form.message);
+    // After successful update
+    onUpdated({ form }) {
+      if (form.valid) toast(form.message);
+    },
+
+    // On server error
+    onError({ result }) {
+      console.error(result.error.message);
+    },
   },
-
-  // On server error
-  onError({ result }) {
-    console.error(result.error.message);
-  },
-});
+);
 ```
 
 ---

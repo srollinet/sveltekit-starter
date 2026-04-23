@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import { resolve } from '$app/paths';
   import { superForm } from 'sveltekit-superforms';
   import { zod4 } from 'sveltekit-superforms/adapters';
@@ -7,9 +8,12 @@
 
   let { data }: { data: PageData } = $props();
 
-  const { form, errors, constraints, enhance } = superForm(data.form, {
-    validators: zod4(updatePostSchema),
-  });
+  const { form, errors, constraints, enhance } = superForm(
+    untrack(() => data.form),
+    {
+      validators: zod4(updatePostSchema),
+    },
+  );
 </script>
 
 <div class="container mx-auto max-w-2xl p-6">
