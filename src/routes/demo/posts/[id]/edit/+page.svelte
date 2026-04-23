@@ -1,30 +1,15 @@
 <script lang="ts">
-  import { untrack } from 'svelte';
-  import { enhance } from '$app/forms';
   import { resolve } from '$app/paths';
-  import { z } from 'zod';
+  import { superForm } from 'sveltekit-superforms';
+  import { zod4 } from 'sveltekit-superforms/adapters';
   import { updatePostSchema, postStatusValues } from '../../schema';
-  import type { PageData, ActionData } from './$types';
+  import type { PageData } from './$types';
 
-  let { data, form }: { data: PageData; form: ActionData } = $props();
+  let { data }: { data: PageData } = $props();
 
-  // untrack: capturing initial values from data intentionally for form editing
-  let title = $state(untrack(() => data.post.title));
-  let body = $state(untrack(() => data.post.body ?? ''));
-  let status = $state(untrack(() => data.post.status));
-  let updateErrors = $state<Record<string, string[] | undefined>>({});
-
-  function getUpdateError(field: string): string | undefined {
-    if (updateErrors[field]?.length) return updateErrors[field]![0];
-    // Fallback to server errors for progressive enhancement (no-JS)
-    if (form && 'errors' in form) {
-      const errors = (form as { errors?: Record<string, string[] | undefined> }).errors;
-      return errors?.[field]?.[0];
-    }
-    return undefined;
-  }
-
-  let titleError = $derived(getUpdateError('title'));
+  const { form, errors, constraints, enhance } = superForm(data.form, {
+    validators: zod4(updatePostSchema),
+  });
 </script>
 
 <div class="container mx-auto max-w-2xl p-6">
@@ -42,27 +27,7 @@
         method="POST"
         action="?/update"
         class="space-y-4"
-        use:enhance={({ cancel }) => {
-          const result = updatePostSchema.safeParse({
-            title,
-            body: body || undefined,
-            status,
-          });
-          if (!result.success) {
-            updateErrors = z.flattenError(result.error).fieldErrors as Record<string, string[]>;
-            cancel();
-            return;
-          }
-          updateErrors = {};
-
-          return async ({ result: actionResult, update }) => {
-            if (actionResult.type === 'failure') {
-              const d = actionResult.data as { errors?: Record<string, string[]> };
-              updateErrors = d?.errors ?? {};
-            }
-            await update();
-          };
-        }}
+        use:enhance
       >
         <div class="form-control">
           <label
@@ -75,13 +40,15 @@
             id="edit-title"
             name="title"
             type="text"
-            bind:value={title}
+            bind:value={$form.title}
+            aria-invalid={$errors.title ? 'true' : undefined}
             class="input input-bordered w-full"
-            class:input-error={!!titleError}
+            class:input-error={!!$errors.title}
             placeholder="Post title"
+            {...$constraints.title}
           />
-          {#if titleError}
-            <p class="text-error mt-1 text-sm">{titleError}</p>
+          {#if $errors.title}
+            <p class="text-error mt-1 text-sm">{$errors.title}</p>
           {/if}
         </div>
 
@@ -95,11 +62,17 @@
           <textarea
             id="edit-body"
             name="body"
-            bind:value={body}
+            bind:value={$form.body}
+            aria-invalid={$errors.body ? 'true' : undefined}
             class="textarea textarea-bordered w-full"
+            class:textarea-error={!!$errors.body}
             rows="6"
             placeholder="Post content (optional)"
+            {...$constraints.body}
           ></textarea>
+          {#if $errors.body}
+            <p class="text-error mt-1 text-sm">{$errors.body}</p>
+          {/if}
         </div>
 
         <div class="form-control">
@@ -112,13 +85,19 @@
           <select
             id="edit-status"
             name="status"
-            bind:value={status}
+            bind:value={$form.status}
+            aria-invalid={$errors.status ? 'true' : undefined}
             class="select select-bordered w-full"
+            class:select-error={!!$errors.status}
+            {...$constraints.status}
           >
             {#each postStatusValues as s (s)}
               <option value={s}>{s}</option>
             {/each}
           </select>
+          {#if $errors.status}
+            <p class="text-error mt-1 text-sm">{$errors.status}</p>
+          {/if}
         </div>
 
         <div class="card-actions justify-between">

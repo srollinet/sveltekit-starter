@@ -5,8 +5,8 @@ export const postStatusValues = ['draft', 'published', 'archived'] as const;
 const postStatusEnum = z.enum(postStatusValues);
 
 const postFields = {
-  title: z.string().min(1, 'Title is required').max(255, 'Title must be 255 characters or less'),
-  body: z.string().optional(),
+  title: z.string().trim().min(1, 'Title is required').max(100, 'Title must be 100 characters or less'),
+  body: z.string().trim().max(1000, 'Body must be 1000 characters or less'),
   status: postStatusEnum,
 };
 

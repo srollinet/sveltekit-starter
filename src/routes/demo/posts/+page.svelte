@@ -1,34 +1,30 @@
 <script lang="ts">
-  import { enhance } from '$app/forms';
   import { resolve } from '$app/paths';
-  import { z } from 'zod';
+  import { superForm } from 'sveltekit-superforms';
+  import { zod4 } from 'sveltekit-superforms/adapters';
   import { createPostSchema, postStatusValues } from './schema';
-  import type { PageData, ActionData } from './$types';
+  import type { PageData } from './$types';
 
-  let { data, form }: { data: PageData; form: ActionData } = $props();
+  let { data }: { data: PageData } = $props();
 
-  let title = $state('');
-  let body = $state('');
-  let status = $state('draft');
-  let createErrors = $state<Record<string, string[] | undefined>>({});
+  const {
+    form: createData,
+    errors: createErrors,
+    constraints: createConstraints,
+    message: createMessage,
+    enhance: createEnhance,
+  } = superForm(data.createForm, {
+    validators: zod4(createPostSchema),
+    resetForm: true,
+  });
 
-  function getCreateError(field: string): string | undefined {
-    if (createErrors[field]?.length) return createErrors[field]![0];
-    // Fallback to server errors for progressive enhancement (no-JS)
-    if (form && 'action' in form && form.action === 'create' && 'errors' in form) {
-      const errors = (form as { errors?: Record<string, string[] | undefined> }).errors;
-      return errors?.[field]?.[0];
-    }
-    return undefined;
-  }
+  const { enhance: updateStatusEnhance } = superForm(data.updateStatusForm);
 
   const statusBadgeClass: Record<string, string> = {
     draft: 'badge-warning',
     published: 'badge-success',
     archived: 'badge-ghost',
   };
-
-  let titleError = $derived(getCreateError('title'));
 </script>
 
 <div class="container mx-auto space-y-8 p-6">
@@ -39,40 +35,15 @@
     <div class="card-body">
       <h2 class="card-title">New Post</h2>
 
-      {#if form?.action === 'create' && form?.success}
-        <div class="alert alert-success mb-2">Post created successfully!</div>
+      {#if $createMessage}
+        <div class="alert alert-success mb-2">{$createMessage}</div>
       {/if}
 
       <form
         method="POST"
         action="?/create"
         class="space-y-4"
-        use:enhance={({ cancel }) => {
-          const result = createPostSchema.safeParse({
-            title,
-            body: body || undefined,
-            status,
-          });
-          if (!result.success) {
-            createErrors = z.flattenError(result.error).fieldErrors as Record<string, string[]>;
-            cancel();
-            return;
-          }
-          createErrors = {};
-
-          return async ({ result: actionResult, update }) => {
-            if (actionResult.type === 'failure') {
-              const d = actionResult.data as { errors?: Record<string, string[]> };
-              createErrors = d?.errors ?? {};
-            } else {
-              title = '';
-              body = '';
-              status = 'draft';
-              createErrors = {};
-            }
-            await update();
-          };
-        }}
+        use:createEnhance
       >
         <div class="form-control">
           <label
@@ -85,13 +56,15 @@
             id="create-title"
             name="title"
             type="text"
-            bind:value={title}
+            bind:value={$createData.title}
+            aria-invalid={$createErrors.title ? 'true' : undefined}
             class="input input-bordered w-full"
-            class:input-error={!!titleError}
+            class:input-error={!!$createErrors.title}
             placeholder="Post title"
+            {...$createConstraints.title}
           />
-          {#if titleError}
-            <p class="text-error mt-1 text-sm">{titleError}</p>
+          {#if $createErrors.title}
+            <p class="text-error mt-1 text-sm">{$createErrors.title}</p>
           {/if}
         </div>
 
@@ -105,11 +78,17 @@
           <textarea
             id="create-body"
             name="body"
-            bind:value={body}
+            bind:value={$createData.body}
+            aria-invalid={$createErrors.body ? 'true' : undefined}
             class="textarea textarea-bordered w-full"
+            class:textarea-error={!!$createErrors.body}
             rows="4"
             placeholder="Post content (optional)"
+            {...$createConstraints.body}
           ></textarea>
+          {#if $createErrors.body}
+            <p class="text-error mt-1 text-sm">{$createErrors.body}</p>
+          {/if}
         </div>
 
         <div class="form-control">
@@ -122,13 +101,19 @@
           <select
             id="create-status"
             name="status"
-            bind:value={status}
+            bind:value={$createData.status}
+            aria-invalid={$createErrors.status ? 'true' : undefined}
             class="select select-bordered w-full"
+            class:select-error={!!$createErrors.status}
+            {...$createConstraints.status}
           >
             {#each postStatusValues as s (s)}
               <option value={s}>{s}</option>
             {/each}
           </select>
+          {#if $createErrors.status}
+            <p class="text-error mt-1 text-sm">{$createErrors.status}</p>
+          {/if}
         </div>
 
         <div class="card-actions justify-end">
@@ -173,7 +158,7 @@
                     <form
                       method="POST"
                       action="?/updateStatus"
-                      use:enhance
+                      use:updateStatusEnhance
                     >
                       <input
                         type="hidden"
