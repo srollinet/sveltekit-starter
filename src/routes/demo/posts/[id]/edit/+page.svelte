@@ -6,9 +6,9 @@
   import { updatePostSchema, postStatusValues } from '../../schema';
   import type { PageData } from './$types';
 
-  import FormTextInput from '$lib/components/FormTextInput.svelte';
-  import FormTextArea from '$lib/components/FormTextArea.svelte';
-  import FormSelect from '$lib/components/FormSelect.svelte';
+  import FormTextInput from '$lib/components/forms/FormTextInput.svelte';
+  import FormTextArea from '$lib/components/forms/FormTextArea.svelte';
+  import FormSelect from '$lib/components/forms/FormSelect.svelte';
 
   let { data }: { data: PageData } = $props();
 

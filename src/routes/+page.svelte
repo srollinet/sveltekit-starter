@@ -1,5 +1,5 @@
 <script lang="ts">
-  import StackBadge from '$lib/components/StackBadge.svelte';
+  import StackBadge from '$lib/components/demo/StackBadge.svelte';
 
   const stackItems = [
     {
