@@ -1,28 +1,25 @@
 <script lang="ts">
   import { untrack } from 'svelte';
-  import { enhance } from '$app/forms';
   import { resolve } from '$app/paths';
-  import { z } from 'zod';
+  import { superForm } from 'sveltekit-superforms';
+  import { zod4 } from 'sveltekit-superforms/adapters';
   import { updatePostSchema, postStatusValues } from '../../schema';
-  import type { PageData, ActionData } from './$types';
+  import type { PageData } from './$types';
 
-  let { data, form }: { data: PageData; form: ActionData } = $props();
+  import FormTextInput from '$lib/components/FormTextInput.svelte';
+  import FormTextArea from '$lib/components/FormTextArea.svelte';
+  import FormSelect from '$lib/components/FormSelect.svelte';
 
-  // untrack: capturing initial values from data intentionally for form editing
-  let title = $state(untrack(() => data.post.title));
-  let body = $state(untrack(() => data.post.body ?? ''));
-  let status = $state(untrack(() => data.post.status));
-  let updateErrors = $state<Record<string, string[] | undefined>>({});
+  let { data }: { data: PageData } = $props();
 
-  function getUpdateError(field: string): string | undefined {
-    if (updateErrors[field]?.length) return updateErrors[field]![0];
-    // Fallback to server errors for progressive enhancement (no-JS)
-    if (form && 'errors' in form) {
-      const errors = (form as { errors?: Record<string, string[] | undefined> }).errors;
-      return errors?.[field]?.[0];
-    }
-    return undefined;
-  }
+  const editSuperForm = superForm(
+    untrack(() => data.form),
+    {
+      validators: zod4(updatePostSchema),
+    },
+  );
+
+  const { enhance } = editSuperForm;
 </script>
 
 <div class="container mx-auto max-w-2xl p-6">
@@ -40,84 +37,35 @@
         method="POST"
         action="?/update"
         class="space-y-4"
-        use:enhance={({ cancel }) => {
-          const result = updatePostSchema.safeParse({
-            title,
-            body: body || undefined,
-            status,
-          });
-          if (!result.success) {
-            updateErrors = z.flattenError(result.error).fieldErrors as Record<string, string[]>;
-            cancel();
-            return;
-          }
-          updateErrors = {};
-
-          return async ({ result: actionResult, update }) => {
-            if (actionResult.type === 'failure') {
-              const d = actionResult.data as { errors?: Record<string, string[]> };
-              updateErrors = d?.errors ?? {};
-            }
-            await update();
-          };
-        }}
+        use:enhance
       >
-        <div class="form-control">
-          <label
-            class="label"
-            for="edit-title"
-          >
-            <span class="label-text">Title <span class="text-error">*</span></span>
-          </label>
-          <input
-            id="edit-title"
-            name="title"
-            type="text"
-            bind:value={title}
-            class="input input-bordered w-full"
-            class:input-error={!!getUpdateError('title')}
-            placeholder="Post title"
-          />
-          {#if getUpdateError('title')}
-            <p class="text-error mt-1 text-sm">{getUpdateError('title')}</p>
-          {/if}
-        </div>
+        <FormTextInput
+          superform={editSuperForm}
+          field="title"
+          id="edit-title"
+          label="Title"
+          placeholder="Post title"
+        />
 
-        <div class="form-control">
-          <label
-            class="label"
-            for="edit-body"
-          >
-            <span class="label-text">Body</span>
-          </label>
-          <textarea
-            id="edit-body"
-            name="body"
-            bind:value={body}
-            class="textarea textarea-bordered w-full"
-            rows="6"
-            placeholder="Post content (optional)"
-          ></textarea>
-        </div>
+        <FormTextArea
+          superform={editSuperForm}
+          field="body"
+          id="edit-body"
+          label="Body"
+          rows={6}
+          placeholder="Post content (optional)"
+        />
 
-        <div class="form-control">
-          <label
-            class="label"
-            for="edit-status"
-          >
-            <span class="label-text">Status</span>
-          </label>
-          <select
-            id="edit-status"
-            name="status"
-            bind:value={status}
-            class="select select-bordered w-full"
-          >
-            {#each postStatusValues as s (s)}
-              <option value={s}>{s}</option>
-            {/each}
-          </select>
-        </div>
+        <FormSelect
+          superform={editSuperForm}
+          field="status"
+          id="edit-status"
+          label="Status"
+        >
+          {#each postStatusValues as s (s)}
+            <option value={s}>{s}</option>
+          {/each}
+        </FormSelect>
 
         <div class="card-actions justify-between">
           <a

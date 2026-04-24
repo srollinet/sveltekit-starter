@@ -7,6 +7,11 @@ export default defineConfig({
   schema: './src/lib/server/db/schema/*',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? 'SET-ME-IN-ENV',
+    url:
+      process.env.DATABASE_URL ??
+      (() => {
+        console.error('DATABASE_URL is required');
+        return '';
+      })(),
   },
 });

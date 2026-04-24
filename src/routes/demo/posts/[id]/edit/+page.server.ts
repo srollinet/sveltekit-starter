@@ -1,6 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { eq } from 'drizzle-orm';
-import { z } from 'zod';
 import { db } from '$lib/server/db';
 import { posts } from '$lib/server/db/schema';
 import { updatePostSchema } from '../../schema';
@@ -18,41 +19,31 @@ export const load: PageServerLoad = async ({ params }) => {
     .where(eq(posts.id, params.id))
     .limit(1);
 
-  if (!post) {
-    error(404, 'Post not found');
-  }
+  if (!post) error(404, 'Post not found');
 
-  return { post };
+  const form = await superValidate(
+    { title: post.title, body: post.body ?? '', status: post.status },
+    zod4(updatePostSchema),
+    { errors: false },
+  );
+
+  return { form };
 };
 
 export const actions: Actions = {
   update: async ({ request, params }) => {
-    const fd = await request.formData();
-    const raw = {
-      title: (fd.get('title') ?? '') as string,
-      body: (fd.get('body') as string) || undefined,
-      status: (fd.get('status') ?? 'draft') as string,
-    };
-
-    const result = updatePostSchema.safeParse(raw);
-    if (!result.success) {
-      return fail(422, {
-        action: 'update' as const,
-        success: false as const,
-        errors: z.flattenError(result.error).fieldErrors as Record<string, string[]>,
-        values: { title: raw.title, body: raw.body ?? '', status: raw.status },
-      });
-    }
+    const form = await superValidate(request, zod4(updatePostSchema));
+    if (!form.valid) return fail(400, { form });
 
     await db
       .update(posts)
       .set({
-        title: result.data.title,
-        body: result.data.body ?? null,
-        status: result.data.status,
+        title: form.data.title,
+        body: form.data.body,
+        status: form.data.status,
       })
       .where(eq(posts.id, params.id));
 
-    throw redirect(303, '/demo/posts');
+    redirect(303, '/demo/posts');
   },
 };

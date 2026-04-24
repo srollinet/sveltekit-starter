@@ -1,20 +1,17 @@
 <script lang="ts">
   import '../app.css';
-  import { onMount } from 'svelte';
   import { resolve } from '$app/paths';
 
   type Theme = 'light' | 'dark';
 
-  let { children } = $props();
-  let theme = $state<Theme>('dark');
-
-  onMount(() => {
+  function getInitialTheme(): Theme {
+    if (typeof document === 'undefined') return 'dark';
     const saved = localStorage.getItem('theme');
-    if (saved === 'light' || saved === 'dark') {
-      theme = saved;
-    }
-    document.documentElement.setAttribute('data-theme', theme);
-  });
+    return saved === 'light' || saved === 'dark' ? saved : 'dark';
+  }
+
+  let { children } = $props();
+  let theme = $state<Theme>(getInitialTheme());
 
   $effect(() => {
     localStorage.setItem('theme', theme);

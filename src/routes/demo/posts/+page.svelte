@@ -1,26 +1,38 @@
 <script lang="ts">
-  import { enhance } from '$app/forms';
+  import { untrack } from 'svelte';
   import { resolve } from '$app/paths';
-  import { z } from 'zod';
+  import { superForm } from 'sveltekit-superforms';
+  import { zod4 } from 'sveltekit-superforms/adapters';
   import { createPostSchema, postStatusValues } from './schema';
-  import type { PageData, ActionData } from './$types';
+  import type { PageData } from './$types';
 
-  let { data, form }: { data: PageData; form: ActionData } = $props();
+  import FormTextInput from '$lib/components/FormTextInput.svelte';
+  import FormTextArea from '$lib/components/FormTextArea.svelte';
+  import FormSelect from '$lib/components/FormSelect.svelte';
 
-  let title = $state('');
-  let body = $state('');
-  let status = $state('draft');
-  let createErrors = $state<Record<string, string[] | undefined>>({});
+  let { data }: { data: PageData } = $props();
 
-  function getCreateError(field: string): string | undefined {
-    if (createErrors[field]?.length) return createErrors[field]![0];
-    // Fallback to server errors for progressive enhancement (no-JS)
-    if (form && 'action' in form && form.action === 'create' && 'errors' in form) {
-      const errors = (form as { errors?: Record<string, string[] | undefined> }).errors;
-      return errors?.[field]?.[0];
-    }
-    return undefined;
-  }
+  const createSuperForm = superForm(
+    untrack(() => data.createForm),
+    {
+      validators: zod4(createPostSchema),
+      resetForm: true,
+    },
+  );
+
+  const { message: createMessage, enhance: createEnhance } = createSuperForm;
+
+  const { enhance: updateStatusEnhance } = superForm(untrack(() => data.updateStatusForm));
+  const { enhance: deleteEnhance } = superForm(
+    untrack(() => data.deleteForm),
+    {
+      onSubmit({ cancel }) {
+        if (!confirm('Are you sure you want to delete this post?')) {
+          cancel();
+        }
+      },
+    },
+  );
 
   const statusBadgeClass: Record<string, string> = {
     draft: 'badge-warning',
@@ -37,97 +49,42 @@
     <div class="card-body">
       <h2 class="card-title">New Post</h2>
 
-      {#if form?.action === 'create' && form?.success}
-        <div class="alert alert-success mb-2">Post created successfully!</div>
+      {#if $createMessage}
+        <div class="alert alert-success mb-2">{$createMessage}</div>
       {/if}
 
       <form
         method="POST"
         action="?/create"
         class="space-y-4"
-        use:enhance={({ cancel }) => {
-          const result = createPostSchema.safeParse({
-            title,
-            body: body || undefined,
-            status,
-          });
-          if (!result.success) {
-            createErrors = z.flattenError(result.error).fieldErrors as Record<string, string[]>;
-            cancel();
-            return;
-          }
-          createErrors = {};
-
-          return async ({ result: actionResult, update }) => {
-            if (actionResult.type === 'failure') {
-              const d = actionResult.data as { errors?: Record<string, string[]> };
-              createErrors = d?.errors ?? {};
-            } else {
-              title = '';
-              body = '';
-              status = 'draft';
-              createErrors = {};
-            }
-            await update();
-          };
-        }}
+        use:createEnhance
       >
-        <div class="form-control">
-          <label
-            class="label"
-            for="create-title"
-          >
-            <span class="label-text">Title <span class="text-error">*</span></span>
-          </label>
-          <input
-            id="create-title"
-            name="title"
-            type="text"
-            bind:value={title}
-            class="input input-bordered w-full"
-            class:input-error={!!getCreateError('title')}
-            placeholder="Post title"
-          />
-          {#if getCreateError('title')}
-            <p class="text-error mt-1 text-sm">{getCreateError('title')}</p>
-          {/if}
-        </div>
+        <FormTextInput
+          superform={createSuperForm}
+          field="title"
+          id="create-title"
+          label="Title"
+          placeholder="Post title"
+        />
 
-        <div class="form-control">
-          <label
-            class="label"
-            for="create-body"
-          >
-            <span class="label-text">Body</span>
-          </label>
-          <textarea
-            id="create-body"
-            name="body"
-            bind:value={body}
-            class="textarea textarea-bordered w-full"
-            rows="4"
-            placeholder="Post content (optional)"
-          ></textarea>
-        </div>
+        <FormTextArea
+          superform={createSuperForm}
+          field="body"
+          id="create-body"
+          label="Body"
+          placeholder="Post content (optional)"
+        />
 
-        <div class="form-control">
-          <label
-            class="label"
-            for="create-status"
-          >
-            <span class="label-text">Status</span>
-          </label>
-          <select
-            id="create-status"
-            name="status"
-            bind:value={status}
-            class="select select-bordered w-full"
-          >
-            {#each postStatusValues as s (s)}
-              <option value={s}>{s}</option>
-            {/each}
-          </select>
-        </div>
+        <FormSelect
+          superform={createSuperForm}
+          field="status"
+          id="create-status"
+          label="Status"
+        >
+          {#each postStatusValues as s (s)}
+            <option value={s}>{s}</option>
+          {/each}
+        </FormSelect>
 
         <div class="card-actions justify-end">
           <button
@@ -171,7 +128,7 @@
                     <form
                       method="POST"
                       action="?/updateStatus"
-                      use:enhance
+                      use:updateStatusEnhance
                     >
                       <input
                         type="hidden"
@@ -202,6 +159,19 @@
                     >
                       Edit
                     </a>
+                    <form
+                      method="POST"
+                      action="?/delete"
+                      use:deleteEnhance
+                      class="ml-2 inline-block"
+                    >
+                      <input
+                        type="hidden"
+                        name="id"
+                        value={post.id}
+                      />
+                      <button class="btn btn-error btn-sm btn-outline">Delete</button>
+                    </form>
                   </td>
                 </tr>
               {/each}

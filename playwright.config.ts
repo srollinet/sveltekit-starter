@@ -1,6 +1,8 @@
 import { defineConfig } from '@playwright/test';
+import { TEST_SERVER_URL } from './tests/constants.js';
 
 export default defineConfig({
-  webServer: { command: 'pnpm build --mode test && pnpm preview --mode test', port: 4173 },
+  globalSetup: './tests/global-setup.ts',
+  use: { baseURL: TEST_SERVER_URL },
   testMatch: '**/*.e2e.{ts,js}',
 });

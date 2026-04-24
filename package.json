@@ -51,7 +51,7 @@
     "globals": "^17.5.0",
     "husky": "^9.1.7",
     "jsdom": "^29.0.2",
-    "knip": "^6.4.1",
+    "knip": "^6.5.0",
     "lint-staged": "^16.4.0",
     "prettier": "3.8.3",
     "prettier-plugin-svelte": "^3.5.1",
@@ -62,7 +62,7 @@
     "testcontainers": "^11.14.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.58.2",
-    "vite": "^8.0.8",
+    "vite": "^8.0.9",
     "vitest": "^4.1.4"
   },
   "pnpm": {
@@ -82,6 +82,7 @@
     "drizzle-orm": "^0.45.2",
     "import-in-the-middle": "^3.0.1",
     "pg": "^8.20.0",
+    "sveltekit-superforms": "^2.30.1",
     "uuidv7": "^1.2.1",
     "zod": "^4.3.6"
   }

@@ -1,9 +1,10 @@
 import { fail } from '@sveltejs/kit';
+import { superValidate, message, setError } from 'sveltekit-superforms';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { desc, eq } from 'drizzle-orm';
-import { z } from 'zod';
 import { db } from '$lib/server/db';
 import { posts } from '$lib/server/db/schema';
-import { createPostSchema, updateStatusSchema } from './schema';
+import { createPostSchema, updatePostStatusSchema, deletePostSchema } from './schema';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -16,55 +17,57 @@ export const load: PageServerLoad = async () => {
     })
     .from(posts)
     .orderBy(desc(posts.createdAt));
-  return { posts: allPosts };
+
+  const [createForm, updateStatusForm, deleteForm] = await Promise.all([
+    superValidate(zod4(createPostSchema)),
+    superValidate(zod4(updatePostStatusSchema)),
+    superValidate(zod4(deletePostSchema)),
+  ]);
+
+  return { posts: allPosts, createForm, updateStatusForm, deleteForm };
 };
 
 export const actions: Actions = {
   create: async ({ request }) => {
-    const fd = await request.formData();
-    const raw = {
-      title: (fd.get('title') ?? '') as string,
-      body: (fd.get('body') as string) || undefined,
-      status: (fd.get('status') ?? 'draft') as string,
-    };
-
-    const result = createPostSchema.safeParse(raw);
-    if (!result.success) {
-      return fail(422, {
-        action: 'create' as const,
-        success: false as const,
-        errors: z.flattenError(result.error).fieldErrors as Record<string, string[]>,
-        values: { title: raw.title, body: raw.body ?? '', status: raw.status },
-      });
-    }
+    const form = await superValidate(request, zod4(createPostSchema));
+    if (!form.valid) return fail(400, { form });
 
     await db.insert(posts).values({
-      title: result.data.title,
-      body: result.data.body ?? null,
-      status: result.data.status,
+      title: form.data.title,
+      body: form.data.body,
+      status: form.data.status,
     });
 
-    return { action: 'create' as const, success: true as const };
+    return message(form, 'Post created!');
   },
 
   updateStatus: async ({ request }) => {
-    const fd = await request.formData();
-    const raw = {
-      id: (fd.get('id') ?? '') as string,
-      status: (fd.get('status') ?? '') as string,
-    };
+    const form = await superValidate(request, zod4(updatePostStatusSchema));
+    if (!form.valid) return fail(400, { form });
 
-    const result = updateStatusSchema.safeParse(raw);
-    if (!result.success) {
-      return fail(422, {
-        action: 'updateStatus' as const,
-        success: false as const,
-        errors: z.flattenError(result.error).fieldErrors as Record<string, string[]>,
-      });
+    const updated = await db
+      .update(posts)
+      .set({ status: form.data.status })
+      .where(eq(posts.id, form.data.id))
+      .returning({ id: posts.id });
+
+    if (updated.length === 0) {
+      return setError(form, 'id', 'Post not found.');
     }
 
-    await db.update(posts).set({ status: result.data.status }).where(eq(posts.id, result.data.id));
+    return { form };
+  },
 
-    return { action: 'updateStatus' as const, success: true as const };
+  delete: async ({ request }) => {
+    const form = await superValidate(request, zod4(deletePostSchema));
+    if (!form.valid) return fail(400, { form });
+
+    const deleted = await db.delete(posts).where(eq(posts.id, form.data.id)).returning({ id: posts.id });
+
+    if (deleted.length === 0) {
+      return setError(form, 'id', 'Post not found.');
+    }
+
+    return message(form, 'Post deleted!');
   },
 };

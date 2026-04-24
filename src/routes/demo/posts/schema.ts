@@ -5,8 +5,8 @@ export const postStatusValues = ['draft', 'published', 'archived'] as const;
 const postStatusEnum = z.enum(postStatusValues);
 
 const postFields = {
-  title: z.string().min(1, 'Title is required').max(255, 'Title must be 255 characters or less'),
-  body: z.string().optional(),
+  title: z.string().trim().min(1, 'Title is required').max(100, 'Title must be 100 characters or less'),
+  body: z.string().trim().max(1000, 'Body must be 1000 characters or less').optional(),
   status: postStatusEnum,
 };
 
@@ -17,9 +17,13 @@ export const createPostSchema = z.object({
 
 export const updatePostSchema = z.object(postFields);
 
-export const updateStatusSchema = z.object({
+export const updatePostStatusSchema = z.object({
   id: z.string().min(1, 'Post ID is required'),
   status: postStatusEnum,
+});
+
+export const deletePostSchema = z.object({
+  id: z.string().min(1, 'Post ID is required'),
 });
 
 export type CreatePostInput = z.infer<typeof createPostSchema>;
