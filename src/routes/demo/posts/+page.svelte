@@ -6,21 +6,21 @@
   import { createPostSchema, postStatusValues } from './schema';
   import type { PageData } from './$types';
 
+  import FormTextInput from '$lib/components/FormTextInput.svelte';
+  import FormTextArea from '$lib/components/FormTextArea.svelte';
+  import FormSelect from '$lib/components/FormSelect.svelte';
+
   let { data }: { data: PageData } = $props();
 
-  const {
-    form: createData,
-    errors: createErrors,
-    constraints: createConstraints,
-    message: createMessage,
-    enhance: createEnhance,
-  } = superForm(
+  const createSuperForm = superForm(
     untrack(() => data.createForm),
     {
       validators: zod4(createPostSchema),
       resetForm: true,
     },
   );
+
+  const { message: createMessage, enhance: createEnhance } = createSuperForm;
 
   const { enhance: updateStatusEnhance } = superForm(untrack(() => data.updateStatusForm));
   const { enhance: deleteEnhance } = superForm(
@@ -59,76 +59,32 @@
         class="space-y-4"
         use:createEnhance
       >
-        <div class="form-control">
-          <label
-            class="label"
-            for="create-title"
-          >
-            <span class="label-text">Title <span class="text-error">*</span></span>
-          </label>
-          <input
-            id="create-title"
-            name="title"
-            type="text"
-            bind:value={$createData.title}
-            aria-invalid={$createErrors.title ? 'true' : undefined}
-            class="input input-bordered w-full"
-            class:input-error={!!$createErrors.title}
-            placeholder="Post title"
-            {...$createConstraints.title}
-          />
-          {#if $createErrors.title}
-            <p class="text-error mt-1 text-sm">{$createErrors.title}</p>
-          {/if}
-        </div>
+        <FormTextInput
+          superform={createSuperForm}
+          field="title"
+          id="create-title"
+          label="Title"
+          placeholder="Post title"
+        />
 
-        <div class="form-control">
-          <label
-            class="label"
-            for="create-body"
-          >
-            <span class="label-text">Body</span>
-          </label>
-          <textarea
-            id="create-body"
-            name="body"
-            bind:value={$createData.body}
-            aria-invalid={$createErrors.body ? 'true' : undefined}
-            class="textarea textarea-bordered w-full"
-            class:textarea-error={!!$createErrors.body}
-            rows="4"
-            placeholder="Post content (optional)"
-            {...$createConstraints.body}
-          ></textarea>
-          {#if $createErrors.body}
-            <p class="text-error mt-1 text-sm">{$createErrors.body}</p>
-          {/if}
-        </div>
+        <FormTextArea
+          superform={createSuperForm}
+          field="body"
+          id="create-body"
+          label="Body"
+          placeholder="Post content (optional)"
+        />
 
-        <div class="form-control">
-          <label
-            class="label"
-            for="create-status"
-          >
-            <span class="label-text">Status</span>
-          </label>
-          <select
-            id="create-status"
-            name="status"
-            bind:value={$createData.status}
-            aria-invalid={$createErrors.status ? 'true' : undefined}
-            class="select select-bordered w-full"
-            class:select-error={!!$createErrors.status}
-            {...$createConstraints.status}
-          >
-            {#each postStatusValues as s (s)}
-              <option value={s}>{s}</option>
-            {/each}
-          </select>
-          {#if $createErrors.status}
-            <p class="text-error mt-1 text-sm">{$createErrors.status}</p>
-          {/if}
-        </div>
+        <FormSelect
+          superform={createSuperForm}
+          field="status"
+          id="create-status"
+          label="Status"
+        >
+          {#each postStatusValues as s (s)}
+            <option value={s}>{s}</option>
+          {/each}
+        </FormSelect>
 
         <div class="card-actions justify-end">
           <button

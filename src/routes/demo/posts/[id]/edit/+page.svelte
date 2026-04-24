@@ -6,14 +6,20 @@
   import { updatePostSchema, postStatusValues } from '../../schema';
   import type { PageData } from './$types';
 
+  import FormTextInput from '$lib/components/FormTextInput.svelte';
+  import FormTextArea from '$lib/components/FormTextArea.svelte';
+  import FormSelect from '$lib/components/FormSelect.svelte';
+
   let { data }: { data: PageData } = $props();
 
-  const { form, errors, constraints, enhance } = superForm(
+  const editSuperForm = superForm(
     untrack(() => data.form),
     {
       validators: zod4(updatePostSchema),
     },
   );
+
+  const { enhance } = editSuperForm;
 </script>
 
 <div class="container mx-auto max-w-2xl p-6">
@@ -33,76 +39,33 @@
         class="space-y-4"
         use:enhance
       >
-        <div class="form-control">
-          <label
-            class="label"
-            for="edit-title"
-          >
-            <span class="label-text">Title <span class="text-error">*</span></span>
-          </label>
-          <input
-            id="edit-title"
-            name="title"
-            type="text"
-            bind:value={$form.title}
-            aria-invalid={$errors.title ? 'true' : undefined}
-            class="input input-bordered w-full"
-            class:input-error={!!$errors.title}
-            placeholder="Post title"
-            {...$constraints.title}
-          />
-          {#if $errors.title}
-            <p class="text-error mt-1 text-sm">{$errors.title}</p>
-          {/if}
-        </div>
+        <FormTextInput
+          superform={editSuperForm}
+          field="title"
+          id="edit-title"
+          label="Title"
+          placeholder="Post title"
+        />
 
-        <div class="form-control">
-          <label
-            class="label"
-            for="edit-body"
-          >
-            <span class="label-text">Body</span>
-          </label>
-          <textarea
-            id="edit-body"
-            name="body"
-            bind:value={$form.body}
-            aria-invalid={$errors.body ? 'true' : undefined}
-            class="textarea textarea-bordered w-full"
-            class:textarea-error={!!$errors.body}
-            rows="6"
-            placeholder="Post content (optional)"
-            {...$constraints.body}
-          ></textarea>
-          {#if $errors.body}
-            <p class="text-error mt-1 text-sm">{$errors.body}</p>
-          {/if}
-        </div>
+        <FormTextArea
+          superform={editSuperForm}
+          field="body"
+          id="edit-body"
+          label="Body"
+          rows={6}
+          placeholder="Post content (optional)"
+        />
 
-        <div class="form-control">
-          <label
-            class="label"
-            for="edit-status"
-          >
-            <span class="label-text">Status</span>
-          </label>
-          <select
-            id="edit-status"
-            name="status"
-            bind:value={$form.status}
-            aria-invalid={$errors.status ? 'true' : undefined}
-            class="select select-bordered w-full"
-            class:select-error={!!$errors.status}
-            {...$constraints.status}
-          >
-            {#each postStatusValues as s (s)}
-              <option value={s}>{s}</option>
-            {/each}
-          </select>
-          {#if $errors.status}
-            <p class="text-error mt-1 text-sm">{$errors.status}</p>
-          {/if}
-        </div>
+        <FormSelect
+          superform={editSuperForm}
+          field="status"
+          id="edit-status"
+          label="Status"
+        >
+          {#each postStatusValues as s (s)}
+            <option value={s}>{s}</option>
+          {/each}
+        </FormSelect>
 
         <div class="card-actions justify-between">
           <a

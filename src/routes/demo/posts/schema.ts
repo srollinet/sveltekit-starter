@@ -6,7 +6,7 @@ const postStatusEnum = z.enum(postStatusValues);
 
 const postFields = {
   title: z.string().trim().min(1, 'Title is required').max(100, 'Title must be 100 characters or less'),
-  body: z.string().trim().max(1000, 'Body must be 1000 characters or less'),
+  body: z.string().trim().max(1000, 'Body must be 1000 characters or less').optional(),
   status: postStatusEnum,
 };
 
