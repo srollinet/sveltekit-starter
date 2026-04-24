@@ -1,32 +1,40 @@
-<script lang="ts">
+<script
+  lang="ts"
+  generics="T extends Record<string, unknown>, Path extends FormPathLeaves<T>"
+>
   import { untrack } from 'svelte';
-  import FormControl, { type FormControlProps } from './FormControl.svelte';
+  import type { FormPathLeaves } from 'sveltekit-superforms';
+  import { formFieldProxy } from 'sveltekit-superforms';
+  import FormControl, { type FormFieldProps } from './FormControl.svelte';
 
-  interface Props extends FormControlProps {
+  interface Props extends FormFieldProps<T, Path> {
     type?: string;
     placeholder?: string;
   }
 
-  let { superform, field, label, id = field, type = 'text', placeholder = '' }: Props = $props();
+  let { superform, field, label, id = field as string, type = 'text', placeholder = '' }: Props = $props();
 
-  let { form: formData, errors, constraints } = untrack(() => superform);
+  const { value, errors, constraints } = formFieldProxy(
+    untrack(() => superform),
+    untrack(() => field),
+  );
 </script>
 
 <FormControl
-  {superform}
-  {field}
   {label}
   {id}
+  error={$errors}
+  required={$constraints?.required}
 >
   <input
     {id}
-    name={field}
+    name={field as string}
     {type}
-    bind:value={$formData[field]}
-    aria-invalid={$errors[field] ? 'true' : undefined}
+    bind:value={$value}
+    aria-invalid={$errors ? 'true' : undefined}
     class="input input-bordered w-full"
-    class:input-error={!!$errors[field]}
+    class:input-error={!!$errors}
     {placeholder}
-    {...$constraints[field]}
+    {...$constraints}
   />
 </FormControl>

@@ -196,6 +196,51 @@ const { form, errors, enhance } = superForm(
 
 ---
 
+## Reusable Form Controls
+
+For simple cases, use the pre-built wrapper components (`FormTextInput`, `FormTextArea`, `FormSelect`) to avoid boilerplate. These components automatically handle labels, validation errors, and the "required" asterisk by reading the schema constraints.
+
+To use them, keep a reference to the main `superForm` instance instead of destructuring everything immediately:
+
+```svelte
+<script lang="ts">
+  import { untrack } from 'svelte';
+  import { superForm } from 'sveltekit-superforms';
+  import FormTextInput from '$lib/components/FormTextInput.svelte';
+
+  let { data } = $props();
+
+  // 1. Keep the main instance
+  const myForm = superForm(untrack(() => data.form));
+
+  // 2. Destructure what you need directly
+  const { enhance, message } = myForm;
+</script>
+
+<form
+  method="POST"
+  use:enhance
+>
+  <!-- Pass the main instance and the field name -->
+  <FormTextInput
+    superform={myForm}
+    field="email"
+    label="Email Address"
+    type="email"
+  />
+
+  <button>Submit</button>
+</form>
+```
+
+Available components in `$lib/components/`:
+
+- `<FormTextInput {superform} field="..." label="..." type="..." id="..." placeholder="..." />`
+- `<FormTextArea {superform} field="..." label="..." rows={4} id="..." placeholder="..." />`
+- `<FormSelect {superform} field="..." label="..." id="...">` (requires `<option>` children)
+
+---
+
 ## Debugging
 
 ```svelte

@@ -2,30 +2,28 @@
   module
   lang="ts"
 >
-  import type { SuperForm } from 'sveltekit-superforms';
+  import type { SuperForm, FormPathLeaves } from 'sveltekit-superforms';
 
-  export interface FormControlProps {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    superform: SuperForm<any, any>;
-    field: string;
+  export interface FormFieldProps<T extends Record<string, unknown>, Path extends FormPathLeaves<T>> {
+    superform: SuperForm<T, unknown>;
+    field: Path;
     label: string;
     id?: string;
   }
 </script>
 
 <script lang="ts">
-  import { untrack, type Snippet } from 'svelte';
+  import type { Snippet } from 'svelte';
 
-  interface Props extends FormControlProps {
+  interface Props {
+    label: string;
+    id: string;
+    error?: string[] | undefined;
+    required?: boolean;
     children: Snippet;
   }
 
-  let { superform, field, label, id = field, children }: Props = $props();
-
-  let { errors, constraints } = untrack(() => superform);
-
-  // Extract constraint to bypass TS union with Partial<{}>
-  let isRequired = $derived(!!($constraints[field] as Record<string, unknown>)?.required);
+  let { label, id, error, required = false, children }: Props = $props();
 </script>
 
 <div class="form-control">
@@ -35,7 +33,7 @@
   >
     <span class="label-text"
       >{label}
-      {#if isRequired}
+      {#if required}
         <span class="text-error">*</span>
       {/if}</span
     >
@@ -43,7 +41,7 @@
 
   {@render children()}
 
-  {#if $errors[field]}
-    <p class="text-error mt-1 text-sm">{$errors[field]}</p>
+  {#if error}
+    <p class="text-error mt-1 text-sm">{error}</p>
   {/if}
 </div>
